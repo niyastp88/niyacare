@@ -19,6 +19,8 @@ export const createAppointment = async (
 
     const { doctorId, date, slot } = req.body;
 
+    
+
     // Validate required fields
     if (!doctorId || !date || !slot) {
       res.status(400).json({
@@ -45,7 +47,38 @@ export const createAppointment = async (
         message: 'Invalid date',
       });
       return;
+
     }
+
+    // Prevent booking for past dates
+// Prevent booking for past dates
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+if (selectedDate < today) {
+  res.status(400).json({
+    message: 'Appointment date cannot be in the past',
+  });
+  return;
+}
+
+// Prevent booking for past time slots on today's date
+if (selectedDate.getTime() === today.getTime()) {
+  const [slotHours, slotMinutes] = slot.split(':').map(Number);
+
+  const currentTime = new Date();
+  const currentMinutes =
+    currentTime.getHours() * 60 + currentTime.getMinutes();
+
+  const slotTotalMinutes = slotHours * 60 + slotMinutes;
+
+  if (slotTotalMinutes <= currentMinutes) {
+    res.status(400).json({
+      message: 'This appointment slot has already passed',
+    });
+    return;
+  }
+}
 
     const dayNames = [
       'Sunday',
