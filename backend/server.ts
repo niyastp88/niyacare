@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './src/config/db';
 import authRoutes from './src/routes/authRoutes';
 import doctorRoutes from './src/routes/doctorRoutes';
+import appointmentRoutes from './src/routes/appointmentRoutes';
 
 
 dotenv.config();
@@ -18,6 +19,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/doctors', doctorRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 app.get('/', (_req, res) => {
   res.json({
