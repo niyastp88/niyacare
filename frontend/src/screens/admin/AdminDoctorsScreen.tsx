@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import api from '../../services/api';
 
@@ -42,12 +42,9 @@ type RootStackParamList = {
   };
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'AdminDoctors'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'AdminDoctors'>;
 
-const AdminDoctorsScreen = ({navigation}: Props) => {
+const AdminDoctorsScreen = ({ navigation }: Props) => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -81,70 +78,55 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
   };
 
   const handleToggleDoctor = (doctor: Doctor) => {
-  const isDeactivating = doctor.isActive;
+    const isDeactivating = doctor.isActive;
 
-  Alert.alert(
-    isDeactivating
-      ? 'Deactivate Doctor'
-      : 'Activate Doctor',
-    isDeactivating
-      ? `Are you sure you want to deactivate Dr. ${doctor.name}?`
-      : `Do you want to activate Dr. ${doctor.name}?`,
-    [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: isDeactivating
-          ? 'Deactivate'
-          : 'Activate',
-        style: isDeactivating
-          ? 'destructive'
-          : 'default',
-        onPress: async () => {
-          try {
-            const endpoint = isDeactivating
-              ? `/doctors/${doctor._id}/deactivate`
-              : `/doctors/${doctor._id}/activate`;
-
-            await api.put(endpoint);
-
-            Alert.alert(
-              'Success',
-              isDeactivating
-                ? 'Doctor deactivated successfully.'
-                : 'Doctor activated successfully.'
-            );
-
-            fetchDoctors();
-          } catch (error: any) {
-            const message =
-              error?.response?.data?.message ||
-              'Something went wrong.';
-
-            Alert.alert(
-              'Action Failed',
-              message
-            );
-          }
+    Alert.alert(
+      isDeactivating ? 'Deactivate Doctor' : 'Activate Doctor',
+      isDeactivating
+        ? `Are you sure you want to deactivate Dr. ${doctor.name}?`
+        : `Do you want to activate Dr. ${doctor.name}?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-      },
-    ]
-  );
-};
+        {
+          text: isDeactivating ? 'Deactivate' : 'Activate',
+          style: isDeactivating ? 'destructive' : 'default',
+          onPress: async () => {
+            try {
+              const endpoint = isDeactivating
+                ? `/doctors/${doctor._id}/deactivate`
+                : `/doctors/${doctor._id}/activate`;
+
+              await api.put(endpoint);
+
+              Alert.alert(
+                'Success',
+                isDeactivating
+                  ? 'Doctor deactivated successfully.'
+                  : 'Doctor activated successfully.',
+              );
+
+              fetchDoctors();
+            } catch (error: any) {
+              const message =
+                error?.response?.data?.message || 'Something went wrong.';
+
+              Alert.alert('Action Failed', message);
+            }
+          },
+        },
+      ],
+    );
+  };
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
-          <ActivityIndicator
-            size="large"
-            color="#0F766E"
-          />
+          <ActivityIndicator size="large" color="#0F766E" />
 
-          <Text style={styles.loadingText}>
-            Loading doctors...
-          </Text>
+          <Text style={styles.loadingText}>Loading doctors...</Text>
         </View>
       </SafeAreaView>
     );
@@ -161,61 +143,44 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
             onRefresh={handleRefresh}
             colors={['#0F766E']}
           />
-        }>
-        
+        }
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
-            <Text style={styles.title}>
-              Manage Doctors
-            </Text>
+            <Text style={styles.title}>Manage Doctors</Text>
 
-            <Text style={styles.subtitle}>
-              Add and manage doctors
-            </Text>
+            <Text style={styles.subtitle}>Add and manage doctors</Text>
           </View>
 
           <TouchableOpacity
             style={styles.addButton}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation.navigate('AddDoctor')
-            }>
-            <Text style={styles.addButtonText}>
-              + Add Doctor
-            </Text>
+            onPress={() => navigation.navigate('AddDoctor')}
+          >
+            <Text style={styles.addButtonText}>+ Add Doctor</Text>
           </TouchableOpacity>
         </View>
 
         {/* Doctors Count */}
         <View style={styles.countCard}>
-          <Text style={styles.countLabel}>
-            Total Doctors
-          </Text>
+          <Text style={styles.countLabel}>Total Doctors</Text>
 
-          <Text style={styles.countValue}>
-            {doctors.length}
-          </Text>
+          <Text style={styles.countValue}>{doctors.length}</Text>
         </View>
 
         {/* Empty State */}
         {doctors.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>
-              No Doctors Found
-            </Text>
+            <Text style={styles.emptyTitle}>No Doctors Found</Text>
 
             <Text style={styles.emptyText}>
-              Add a doctor to start managing your
-              appointments.
+              Add a doctor to start managing your appointments.
             </Text>
           </View>
         ) : (
           doctors.map(doctor => (
-            <View
-              key={doctor._id}
-              style={styles.doctorCard}>
-              
+            <View key={doctor._id} style={styles.doctorCard}>
               {/* Doctor Header */}
               <View style={styles.doctorHeader}>
                 <View style={styles.avatar}>
@@ -225,9 +190,7 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
                 </View>
 
                 <View style={styles.doctorInfo}>
-                  <Text style={styles.doctorName}>
-                    Dr. {doctor.name}
-                  </Text>
+                  <Text style={styles.doctorName}>Dr. {doctor.name}</Text>
 
                   <Text style={styles.specialization}>
                     {doctor.specialization}
@@ -238,19 +201,13 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
               {/* Doctor Details */}
               <View style={styles.detailsContainer}>
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>
-                    Qualification
-                  </Text>
+                  <Text style={styles.detailLabel}>Qualification</Text>
 
-                  <Text style={styles.detailValue}>
-                    {doctor.qualification}
-                  </Text>
+                  <Text style={styles.detailValue}>{doctor.qualification}</Text>
                 </View>
 
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>
-                    Experience
-                  </Text>
+                  <Text style={styles.detailLabel}>Experience</Text>
 
                   <Text style={styles.detailValue}>
                     {doctor.experience} years
@@ -258,9 +215,7 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
                 </View>
 
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>
-                    Consultation Fee
-                  </Text>
+                  <Text style={styles.detailLabel}>Consultation Fee</Text>
 
                   <Text style={styles.detailValue}>
                     ₹{doctor.consultationFee}
@@ -268,40 +223,26 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
                 </View>
 
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>
-                    Start Time
-                  </Text>
+                  <Text style={styles.detailLabel}>Start Time</Text>
 
-                  <Text style={styles.detailValue}>
-                    {doctor.startTime}
-                  </Text>
+                  <Text style={styles.detailValue}>{doctor.startTime}</Text>
                 </View>
 
                 <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>
-                    Daily Tokens
-                  </Text>
+                  <Text style={styles.detailLabel}>Daily Tokens</Text>
 
-                  <Text style={styles.detailValue}>
-                    {doctor.dailyTokens}
-                  </Text>
+                  <Text style={styles.detailValue}>{doctor.dailyTokens}</Text>
                 </View>
               </View>
 
               {/* Available Days */}
               <View style={styles.daysSection}>
-                <Text style={styles.detailLabel}>
-                  Available Days
-                </Text>
+                <Text style={styles.detailLabel}>Available Days</Text>
 
                 <View style={styles.daysContainer}>
                   {doctor.availableDays.map(day => (
-                    <View
-                      key={day}
-                      style={styles.dayBadge}>
-                      <Text style={styles.dayText}>
-                        {day.substring(0, 3)}
-                      </Text>
+                    <View key={day} style={styles.dayBadge}>
+                      <Text style={styles.dayText}>{day.substring(0, 3)}</Text>
                     </View>
                   ))}
                 </View>
@@ -309,7 +250,6 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
 
               {/* Actions */}
               <View style={styles.actionRow}>
-                
                 {/* Edit */}
                 <TouchableOpacity
                   style={styles.editButton}
@@ -318,34 +258,31 @@ const AdminDoctorsScreen = ({navigation}: Props) => {
                     navigation.navigate('EditDoctor', {
                       doctor,
                     })
-                  }>
-                  <Text style={styles.editButtonText}>
-                    Edit
-                  </Text>
+                  }
+                >
+                  <Text style={styles.editButtonText}>Edit</Text>
                 </TouchableOpacity>
 
                 {/* Activate/Deactivate */}
                 <TouchableOpacity
-  style={
-    doctor.isActive
-      ? styles.deactivateButton
-      : styles.activateButton
-  }
-  activeOpacity={0.8}
-  onPress={() =>
-    handleToggleDoctor(doctor)
-  }>
-  <Text
-    style={
-      doctor.isActive
-        ? styles.deactivateButtonText
-        : styles.activateButtonText
-    }>
-    {doctor.isActive
-      ? 'Deactivate'
-      : 'Activate'}
-  </Text>
-</TouchableOpacity>
+                  style={
+                    doctor.isActive
+                      ? styles.deactivateButton
+                      : styles.activateButton
+                  }
+                  activeOpacity={0.8}
+                  onPress={() => handleToggleDoctor(doctor)}
+                >
+                  <Text
+                    style={
+                      doctor.isActive
+                        ? styles.deactivateButtonText
+                        : styles.activateButtonText
+                    }
+                  >
+                    {doctor.isActive ? 'Deactivate' : 'Activate'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           ))
@@ -594,34 +531,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   deactivateButton: {
-  flex: 1,
-  height: 42,
-  borderRadius: 10,
-  backgroundColor: '#FEF3C7',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+    flex: 1,
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: '#FEF3C7',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-deactivateButtonText: {
-  fontSize: 13,
-  fontWeight: '700',
-  color: '#B45309',
-},
+  deactivateButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#B45309',
+  },
 
-activateButton: {
-  flex: 1,
-  height: 42,
-  borderRadius: 10,
-  backgroundColor: '#DCFCE7',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+  activateButton: {
+    flex: 1,
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: '#DCFCE7',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-activateButtonText: {
-  fontSize: 13,
-  fontWeight: '700',
-  color: '#15803D',
-},
+  activateButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#15803D',
+  },
 });
 
 export default AdminDoctorsScreen;

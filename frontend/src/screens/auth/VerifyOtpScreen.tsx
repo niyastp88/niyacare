@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {verifyOtp} from '../../services/authService';
+import { verifyOtp } from '../../services/authService';
 
 type RootStackParamList = {
   Login: undefined;
@@ -29,13 +29,10 @@ type RootStackParamList = {
   AdminDashboard: undefined;
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'VerifyOtp'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'VerifyOtp'>;
 
-const VerifyOtpScreen = ({navigation, route}: Props) => {
-  const {email} = route.params;
+const VerifyOtpScreen = ({ navigation, route }: Props) => {
+  const { email } = route.params;
 
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,10 +44,7 @@ const VerifyOtpScreen = ({navigation, route}: Props) => {
     }
 
     if (otp.trim().length !== 6) {
-      Alert.alert(
-        'Invalid OTP',
-        'Please enter a valid 6-digit OTP',
-      );
+      Alert.alert('Invalid OTP', 'Please enter a valid 6-digit OTP');
       return;
     }
 
@@ -59,19 +53,15 @@ const VerifyOtpScreen = ({navigation, route}: Props) => {
 
       await verifyOtp(email, otp.trim());
 
-      Alert.alert(
-        'OTP Verified',
-        'OTP verified successfully.',
-        [
-          {
-            text: 'Continue',
-            onPress: () =>
-              navigation.replace('ResetPassword', {
-                email,
-              }),
-          },
-        ],
-      );
+      Alert.alert('OTP Verified', 'OTP verified successfully.', [
+        {
+          text: 'Continue',
+          onPress: () =>
+            navigation.replace('ResetPassword', {
+              email,
+            }),
+        },
+      ]);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
@@ -89,9 +79,7 @@ const VerifyOtpScreen = ({navigation, route}: Props) => {
         {/* Header */}
         <Text style={styles.title}>Verify OTP</Text>
 
-        <Text style={styles.subtitle}>
-          Enter the 6-digit OTP sent to
-        </Text>
+        <Text style={styles.subtitle}>Enter the 6-digit OTP sent to</Text>
 
         <Text style={styles.email}>{email}</Text>
 
@@ -111,12 +99,10 @@ const VerifyOtpScreen = ({navigation, route}: Props) => {
 
         {/* Verify Button */}
         <TouchableOpacity
-          style={[
-            styles.button,
-            loading && styles.disabledButton,
-          ]}
+          style={[styles.button, loading && styles.disabledButton]}
           onPress={handleVerifyOtp}
-          disabled={loading}>
+          disabled={loading}
+        >
           <Text style={styles.buttonText}>
             {loading ? 'Verifying...' : 'Verify OTP'}
           </Text>
@@ -125,10 +111,9 @@ const VerifyOtpScreen = ({navigation, route}: Props) => {
         {/* Back */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Text style={styles.backText}>
-            Back
-          </Text>
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../../services/api';
@@ -29,12 +29,9 @@ interface DashboardStats {
   completedAppointments: number;
 }
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'AdminDashboard'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'AdminDashboard'>;
 
-const AdminDashboardScreen = ({navigation}: Props) => {
+const AdminDashboardScreen = ({ navigation }: Props) => {
   const [stats, setStats] = useState<DashboardStats>({
     totalDoctors: 0,
     totalAppointments: 0,
@@ -48,10 +45,7 @@ const AdminDashboardScreen = ({navigation}: Props) => {
 
       setStats(response.data);
     } catch (error: any) {
-      console.log(
-        'Dashboard stats error:',
-        error?.response?.data || error,
-      );
+      console.log('Dashboard stats error:', error?.response?.data || error);
     }
   };
 
@@ -60,232 +54,152 @@ const AdminDashboardScreen = ({navigation}: Props) => {
   }, []);
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await AsyncStorage.removeItem('token');
-              await AsyncStorage.removeItem('user');
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('user');
 
-              navigation.replace('Login');
-            } catch (error) {
-              console.log('Logout error:', error);
+            navigation.replace('Login');
+          } catch (error) {
+            console.log('Logout error:', error);
 
-              Alert.alert(
-                'Logout Failed',
-                'Unable to logout. Please try again.',
-              );
-            }
-          },
+            Alert.alert('Logout Failed', 'Unable to logout. Please try again.');
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}>
-
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.eyebrow}>
-              ADMIN PANEL
-            </Text>
+            <Text style={styles.eyebrow}>ADMIN PANEL</Text>
 
-            <Text style={styles.title}>
-              Dashboard
-            </Text>
+            <Text style={styles.title}>Dashboard</Text>
 
-            <Text style={styles.subtitle}>
-              Manage NiyaCare efficiently
-            </Text>
+            <Text style={styles.subtitle}>Manage NiyaCare efficiently</Text>
           </View>
         </View>
 
         {/* Overview */}
-        <Text style={styles.sectionTitle}>
-          Overview
-        </Text>
+        <Text style={styles.sectionTitle}>Overview</Text>
 
         <View style={styles.statsGrid}>
           {/* Doctors */}
           <View style={styles.statCard}>
-            <View
-              style={[
-                styles.statIcon,
-                styles.doctorIcon,
-              ]}>
-              <Text style={styles.statIconText}>
-                +
-              </Text>
+            <View style={[styles.statIcon, styles.doctorIcon]}>
+              <Text style={styles.statIconText}>+</Text>
             </View>
 
-            <Text style={styles.statValue}>
-              {stats.totalDoctors}
-            </Text>
+            <Text style={styles.statValue}>{stats.totalDoctors}</Text>
 
-            <Text style={styles.statLabel}>
-              Doctors
-            </Text>
+            <Text style={styles.statLabel}>Doctors</Text>
           </View>
 
           {/* Appointments */}
           <View style={styles.statCard}>
-            <View
-              style={[
-                styles.statIcon,
-                styles.appointmentIcon,
-              ]}>
-              <Text style={styles.statIconText}>
-                ✓
-              </Text>
+            <View style={[styles.statIcon, styles.appointmentIcon]}>
+              <Text style={styles.statIconText}>✓</Text>
             </View>
 
-            <Text style={styles.statValue}>
-              {stats.totalAppointments}
-            </Text>
+            <Text style={styles.statValue}>{stats.totalAppointments}</Text>
 
-            <Text style={styles.statLabel}>
-              Appointments
-            </Text>
+            <Text style={styles.statLabel}>Appointments</Text>
           </View>
 
           {/* Pending */}
           <View style={styles.statCard}>
-            <View
-              style={[
-                styles.statIcon,
-                styles.pendingIcon,
-              ]}>
-              <Text style={styles.statIconText}>
-                !
-              </Text>
+            <View style={[styles.statIcon, styles.pendingIcon]}>
+              <Text style={styles.statIconText}>!</Text>
             </View>
 
-            <Text style={styles.statValue}>
-              {stats.pendingAppointments}
-            </Text>
+            <Text style={styles.statValue}>{stats.pendingAppointments}</Text>
 
-            <Text style={styles.statLabel}>
-              Pending
-            </Text>
+            <Text style={styles.statLabel}>Pending</Text>
           </View>
 
           {/* Completed */}
           <View style={styles.statCard}>
-            <View
-              style={[
-                styles.statIcon,
-                styles.completedIcon,
-              ]}>
-              <Text style={styles.statIconText}>
-                ✓
-              </Text>
+            <View style={[styles.statIcon, styles.completedIcon]}>
+              <Text style={styles.statIconText}>✓</Text>
             </View>
 
-            <Text style={styles.statValue}>
-              {stats.completedAppointments}
-            </Text>
+            <Text style={styles.statValue}>{stats.completedAppointments}</Text>
 
-            <Text style={styles.statLabel}>
-              Completed
-            </Text>
+            <Text style={styles.statLabel}>Completed</Text>
           </View>
         </View>
 
         {/* Management */}
-        <Text style={styles.sectionTitle}>
-          Management
-        </Text>
+        <Text style={styles.sectionTitle}>Management</Text>
 
         {/* Manage Doctors */}
         <TouchableOpacity
           style={styles.managementCard}
           activeOpacity={0.8}
-          onPress={() =>
-            navigation.navigate('AdminDoctors')
-          }>
-          <View
-            style={[
-              styles.managementIcon,
-              styles.doctorManagementIcon,
-            ]}>
-            <Text style={styles.managementIconText}>
-              +
-            </Text>
+          onPress={() => navigation.navigate('AdminDoctors')}
+        >
+          <View style={[styles.managementIcon, styles.doctorManagementIcon]}>
+            <Text style={styles.managementIconText}>+</Text>
           </View>
 
           <View style={styles.managementContent}>
-            <Text style={styles.managementTitle}>
-              Manage Doctors
-            </Text>
+            <Text style={styles.managementTitle}>Manage Doctors</Text>
 
             <Text style={styles.managementDescription}>
               Add, update and manage doctor availability
             </Text>
           </View>
 
-          <Text style={styles.arrow}>
-            ›
-          </Text>
+          <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
 
         {/* Manage Appointments */}
         <TouchableOpacity
           style={styles.managementCard}
           activeOpacity={0.8}
-          onPress={() =>
-            navigation.navigate('AdminAppointments')
-          }>
+          onPress={() => navigation.navigate('AdminAppointments')}
+        >
           <View
-            style={[
-              styles.managementIcon,
-              styles.appointmentManagementIcon,
-            ]}>
-            <Text style={styles.managementIconText}>
-              ✓
-            </Text>
+            style={[styles.managementIcon, styles.appointmentManagementIcon]}
+          >
+            <Text style={styles.managementIconText}>✓</Text>
           </View>
 
           <View style={styles.managementContent}>
-            <Text style={styles.managementTitle}>
-              Manage Appointments
-            </Text>
+            <Text style={styles.managementTitle}>Manage Appointments</Text>
 
             <Text style={styles.managementDescription}>
               Review and update appointment status
             </Text>
           </View>
 
-          <Text style={styles.arrow}>
-            ›
-          </Text>
+          <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
 
         {/* Logout */}
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={handleLogout}
-          activeOpacity={0.8}>
-          <Text style={styles.logoutIcon}>
-            ↪
-          </Text>
+          activeOpacity={0.8}
+        >
+          <Text style={styles.logoutIcon}>↪</Text>
 
-          <Text style={styles.logoutText}>
-            Logout
-          </Text>
+          <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
 
         {/* Footer */}

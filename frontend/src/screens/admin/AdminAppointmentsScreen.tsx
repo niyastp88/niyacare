@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import api from '../../services/api';
 
@@ -147,9 +147,7 @@ const AdminAppointmentsScreen = () => {
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color="#0F766E" />
 
-          <Text style={styles.loadingText}>
-            Loading appointments...
-          </Text>
+          <Text style={styles.loadingText}>Loading appointments...</Text>
         </View>
       </SafeAreaView>
     );
@@ -166,7 +164,8 @@ const AdminAppointmentsScreen = () => {
             onRefresh={handleRefresh}
             colors={['#0F766E']}
           />
-        }>
+        }
+      >
         <View style={styles.header}>
           <Text style={styles.title}>Manage Appointments</Text>
 
@@ -177,9 +176,7 @@ const AdminAppointmentsScreen = () => {
 
         {appointments.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>
-              No Appointments
-            </Text>
+            <Text style={styles.emptyTitle}>No Appointments</Text>
 
             <Text style={styles.emptyText}>
               There are no appointments available.
@@ -187,15 +184,11 @@ const AdminAppointmentsScreen = () => {
           </View>
         ) : (
           appointments.map(appointment => (
-            <View
-              key={appointment._id}
-              style={styles.card}>
+            <View key={appointment._id} style={styles.card}>
               {/* Top Row */}
               <View style={styles.topRow}>
                 <View>
-                  <Text style={styles.tokenLabel}>
-                    Token
-                  </Text>
+                  <Text style={styles.tokenLabel}>Token</Text>
 
                   <Text style={styles.tokenNumber}>
                     #{appointment.tokenNumber}
@@ -206,17 +199,15 @@ const AdminAppointmentsScreen = () => {
                   style={[
                     styles.statusBadge,
                     getStatusStyle(appointment.status),
-                  ]}>
+                  ]}
+                >
                   <Text
                     style={[
                       styles.statusText,
-                      getStatusTextStyle(
-                        appointment.status,
-                      ),
-                    ]}>
-                    {appointment.status
-                      .charAt(0)
-                      .toUpperCase() +
+                      getStatusTextStyle(appointment.status),
+                    ]}
+                  >
+                    {appointment.status.charAt(0).toUpperCase() +
                       appointment.status.slice(1)}
                   </Text>
                 </View>
@@ -224,13 +215,9 @@ const AdminAppointmentsScreen = () => {
 
               {/* Patient */}
               <View style={styles.section}>
-                <Text style={styles.sectionLabel}>
-                  Patient
-                </Text>
+                <Text style={styles.sectionLabel}>Patient</Text>
 
-                <Text style={styles.patientName}>
-                  {appointment.user?.name}
-                </Text>
+                <Text style={styles.patientName}>{appointment.user?.name}</Text>
 
                 <Text style={styles.patientEmail}>
                   {appointment.user?.email}
@@ -239,9 +226,7 @@ const AdminAppointmentsScreen = () => {
 
               {/* Doctor */}
               <View style={styles.section}>
-                <Text style={styles.sectionLabel}>
-                  Doctor
-                </Text>
+                <Text style={styles.sectionLabel}>Doctor</Text>
 
                 <Text style={styles.doctorName}>
                   Dr. {appointment.doctor?.name}
@@ -255,23 +240,15 @@ const AdminAppointmentsScreen = () => {
               {/* Appointment Details */}
               <View style={styles.detailsRow}>
                 <View style={styles.detailItem}>
-                  <Text style={styles.detailLabel}>
-                    Date
-                  </Text>
+                  <Text style={styles.detailLabel}>Date</Text>
 
-                  <Text style={styles.detailValue}>
-                    {appointment.date}
-                  </Text>
+                  <Text style={styles.detailValue}>{appointment.date}</Text>
                 </View>
 
                 <View style={styles.detailItem}>
-                  <Text style={styles.detailLabel}>
-                    Time
-                  </Text>
+                  <Text style={styles.detailLabel}>Time</Text>
 
-                  <Text style={styles.detailValue}>
-                    {appointment.slot}
-                  </Text>
+                  <Text style={styles.detailValue}>{appointment.slot}</Text>
                 </View>
               </View>
 
@@ -282,28 +259,20 @@ const AdminAppointmentsScreen = () => {
                     style={styles.cancelButton}
                     activeOpacity={0.8}
                     onPress={() =>
-                      handleStatusUpdate(
-                        appointment._id,
-                        'cancelled',
-                      )
-                    }>
-                    <Text style={styles.cancelButtonText}>
-                      Cancel
-                    </Text>
+                      handleStatusUpdate(appointment._id, 'cancelled')
+                    }
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.confirmButton}
                     activeOpacity={0.8}
                     onPress={() =>
-                      handleStatusUpdate(
-                        appointment._id,
-                        'confirmed',
-                      )
-                    }>
-                    <Text style={styles.confirmButtonText}>
-                      Confirm
-                    </Text>
+                      handleStatusUpdate(appointment._id, 'confirmed')
+                    }
+                  >
+                    <Text style={styles.confirmButtonText}>Confirm</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -316,11 +285,9 @@ const AdminAppointmentsScreen = () => {
                       style={styles.completeButton}
                       activeOpacity={0.8}
                       onPress={() =>
-                        handleStatusUpdate(
-                          appointment._id,
-                          'completed',
-                        )
-                      }>
+                        handleStatusUpdate(appointment._id, 'completed')
+                      }
+                    >
                       <Text style={styles.completeButtonText}>
                         Mark as Completed
                       </Text>

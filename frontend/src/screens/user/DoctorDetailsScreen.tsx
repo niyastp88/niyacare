@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
   Login: undefined;
@@ -19,8 +19,8 @@ type RootStackParamList = {
     doctor: Doctor;
   };
   BookAppointment: {
-  doctor: Doctor;
-};
+    doctor: Doctor;
+  };
 };
 
 interface Doctor {
@@ -36,20 +36,17 @@ interface Doctor {
   dailyTokens: number;
 }
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'DoctorDetails'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'DoctorDetails'>;
 
-const DoctorDetailsScreen = ({route, navigation}: Props) => {
-  const {doctor} = route.params;
+const DoctorDetailsScreen = ({ route, navigation }: Props) => {
+  const { doctor } = route.params;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}>
-
+        showsVerticalScrollIndicator={false}
+      >
         {/* Doctor Header */}
         <View style={styles.profileSection}>
           <View style={styles.avatar}>
@@ -58,67 +55,49 @@ const DoctorDetailsScreen = ({route, navigation}: Props) => {
 
           <Text style={styles.name}>{doctor.name}</Text>
 
-          <Text style={styles.specialization}>
-            {doctor.specialization}
-          </Text>
+          <Text style={styles.specialization}>{doctor.specialization}</Text>
 
-          <Text style={styles.qualification}>
-            {doctor.qualification}
-          </Text>
+          <Text style={styles.qualification}>{doctor.qualification}</Text>
         </View>
 
         {/* Professional Information */}
-        <Text style={styles.sectionTitle}>
-          Professional Information
-        </Text>
+        <Text style={styles.sectionTitle}>Professional Information</Text>
 
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Experience</Text>
-            <Text style={styles.infoValue}>
-              {doctor.experience} years
-            </Text>
+            <Text style={styles.infoValue}>{doctor.experience} years</Text>
           </View>
 
           <View style={styles.divider} />
 
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Consultation Fee</Text>
-            <Text style={styles.infoValue}>
-              ₹{doctor.consultationFee}
-            </Text>
+            <Text style={styles.infoValue}>₹{doctor.consultationFee}</Text>
           </View>
 
           <View style={styles.divider} />
 
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Daily Tokens</Text>
-            <Text style={styles.infoValue}>
-              {doctor.dailyTokens}
-            </Text>
+            <Text style={styles.infoValue}>{doctor.dailyTokens}</Text>
           </View>
 
           <View style={styles.divider} />
 
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Start Time</Text>
-            <Text style={styles.infoValue}>
-              {doctor.startTime}
-            </Text>
+            <Text style={styles.infoValue}>{doctor.startTime}</Text>
           </View>
         </View>
 
         {/* Availability */}
-        <Text style={styles.sectionTitle}>
-          Available Days
-        </Text>
+        <Text style={styles.sectionTitle}>Available Days</Text>
 
         <View style={styles.daysCard}>
           <View style={styles.daysContainer}>
             {doctor.availableDays.map(day => (
-              <View
-                key={day}
-                style={styles.dayBadge}>
+              <View key={day} style={styles.dayBadge}>
                 <Text style={styles.dayText}>{day}</Text>
               </View>
             ))}
@@ -127,27 +106,23 @@ const DoctorDetailsScreen = ({route, navigation}: Props) => {
 
         {/* Booking */}
         <View style={styles.bookingCard}>
-          <Text style={styles.bookingTitle}>
-            Ready to book?
-          </Text>
+          <Text style={styles.bookingTitle}>Ready to book?</Text>
 
           <Text style={styles.bookingDescription}>
-            Select a date and available time slot to book
-            your appointment.
+            Select a date and available time slot to book your appointment.
           </Text>
 
           <TouchableOpacity
-  style={styles.bookButton}
-  activeOpacity={0.8}
-  onPress={() =>
-    navigation.navigate('BookAppointment', {
-      doctor,
-    })
-  }>
-  <Text style={styles.bookButtonText}>
-    Book Appointment
-  </Text>
-</TouchableOpacity>
+            style={styles.bookButton}
+            activeOpacity={0.8}
+            onPress={() =>
+              navigation.navigate('BookAppointment', {
+                doctor,
+              })
+            }
+          >
+            <Text style={styles.bookButtonText}>Book Appointment</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

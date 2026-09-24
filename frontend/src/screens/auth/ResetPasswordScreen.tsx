@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {resetPassword} from '../../services/authService';
+import { resetPassword } from '../../services/authService';
 
 type RootStackParamList = {
   Login: undefined;
@@ -29,13 +29,10 @@ type RootStackParamList = {
   AdminDashboard: undefined;
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'ResetPassword'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'ResetPassword'>;
 
-const ResetPasswordScreen = ({navigation, route}: Props) => {
-  const {email} = route.params;
+const ResetPasswordScreen = ({ navigation, route }: Props) => {
+  const { email } = route.params;
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -75,16 +72,12 @@ const ResetPasswordScreen = ({navigation, route}: Props) => {
 
       await resetPassword(email, newPassword);
 
-      Alert.alert(
-        'Success',
-        'Your password has been reset successfully.',
-        [
-          {
-            text: 'Login',
-            onPress: () => navigation.replace('Login'),
-          },
-        ],
-      );
+      Alert.alert('Success', 'Your password has been reset successfully.', [
+        {
+          text: 'Login',
+          onPress: () => navigation.replace('Login'),
+        },
+      ]);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
@@ -99,22 +92,16 @@ const ResetPasswordScreen = ({navigation, route}: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-          Reset Password
-        </Text>
+        <Text style={styles.title}>Reset Password</Text>
 
         <Text style={styles.subtitle}>
           Create a new password for your account.
         </Text>
 
-        <Text style={styles.email}>
-          {email}
-        </Text>
+        <Text style={styles.email}>{email}</Text>
 
         {/* New Password */}
-        <Text style={styles.label}>
-          New Password
-        </Text>
+        <Text style={styles.label}>New Password</Text>
 
         <TextInput
           style={styles.input}
@@ -126,9 +113,7 @@ const ResetPasswordScreen = ({navigation, route}: Props) => {
         />
 
         {/* Confirm Password */}
-        <Text style={styles.label}>
-          Confirm Password
-        </Text>
+        <Text style={styles.label}>Confirm Password</Text>
 
         <TextInput
           style={styles.input}
@@ -140,22 +125,18 @@ const ResetPasswordScreen = ({navigation, route}: Props) => {
         />
 
         <Text style={styles.passwordHint}>
-          Minimum 8 characters with uppercase, lowercase,
-          number and special character.
+          Minimum 8 characters with uppercase, lowercase, number and special
+          character.
         </Text>
 
         {/* Reset Button */}
         <TouchableOpacity
-          style={[
-            styles.button,
-            loading && styles.disabledButton,
-          ]}
+          style={[styles.button, loading && styles.disabledButton]}
           onPress={handleResetPassword}
-          disabled={loading}>
+          disabled={loading}
+        >
           <Text style={styles.buttonText}>
-            {loading
-              ? 'Resetting...'
-              : 'Reset Password'}
+            {loading ? 'Resetting...' : 'Reset Password'}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,9 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {loginUser} from '../../services/authService';
+import { loginUser } from '../../services/authService';
 
 type RootStackParamList = {
   Login: undefined;
@@ -24,30 +24,27 @@ type RootStackParamList = {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const LoginScreen = ({navigation}: Props) => {
+const LoginScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert(
-        'Missing Information',
-        'Please enter email and password',
-      );
+      Alert.alert('Missing Information', 'Please enter email and password');
       return;
     }
 
     try {
+      setLoading(true);
+
       const data = await loginUser({
         email,
         password,
       });
 
       await AsyncStorage.setItem('token', data.token);
-      await AsyncStorage.setItem(
-        'user',
-        JSON.stringify(data.user),
-      );
+      await AsyncStorage.setItem('user', JSON.stringify(data.user));
 
       Alert.alert('Success', 'Login successful');
 
@@ -58,21 +55,23 @@ const LoginScreen = ({navigation}: Props) => {
       }
     } catch (error: any) {
       const message =
-        error?.response?.data?.message ||
-        'Login failed. Please try again.';
+        error?.response?.data?.message || 'Login failed. Please try again.';
 
       Alert.alert('Login Failed', message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.keyboardContainer}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView
         contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled">
-
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Logo */}
         <View style={styles.logoContainer}>
           <View style={styles.logoCircle}>
@@ -81,16 +80,12 @@ const LoginScreen = ({navigation}: Props) => {
 
           <Text style={styles.appName}>NiyaCare</Text>
 
-          <Text style={styles.tagline}>
-            Your health, our priority
-          </Text>
+          <Text style={styles.tagline}>Your health, our priority</Text>
         </View>
 
         {/* Login Form */}
         <View style={styles.formContainer}>
-          <Text style={styles.welcome}>
-            Login to NiyaCare
-          </Text>
+          <Text style={styles.welcome}>Login to NiyaCare</Text>
 
           <Text style={styles.description}>
             Enter your credentials to continue
@@ -125,47 +120,38 @@ const LoginScreen = ({navigation}: Props) => {
           <TouchableOpacity
             style={styles.forgotPasswordContainer}
             activeOpacity={0.7}
-            onPress={() =>
-              navigation.navigate('ForgotPassword')
-            }>
-            <Text style={styles.forgotPassword}>
-              Forgot Password?
-            </Text>
+            onPress={() => navigation.navigate('ForgotPassword')}
+          >
+            <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
 
           {/* Login Button */}
           <TouchableOpacity
-            style={styles.loginButton}
+            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
             activeOpacity={0.8}
-            onPress={handleLogin}>
+            onPress={handleLogin}
+            disabled={loading}
+          >
             <Text style={styles.loginButtonText}>
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </Text>
           </TouchableOpacity>
 
           {/* Register */}
           <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>
-              Don't have an account?
-            </Text>
+            <Text style={styles.registerText}>Don't have an account?</Text>
 
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() =>
-                navigation.navigate('Register')
-              }>
-              <Text style={styles.registerLink}>
-                {' '}
-                Register
-              </Text>
+              onPress={() => navigation.navigate('Register')}
+            >
+              <Text style={styles.registerLink}> Register</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Footer */}
-        <Text style={styles.footer}>
-          Secure healthcare made simple
-        </Text>
+        <Text style={styles.footer}>Secure healthcare made simple</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -282,6 +268,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 4,
+  },
+
+  loginButtonDisabled: {
+    opacity: 0.7,
   },
 
   loginButtonText: {

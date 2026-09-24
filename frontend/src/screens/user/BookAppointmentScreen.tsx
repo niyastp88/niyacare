@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import api from '../../services/api';
 
 interface Doctor {
@@ -38,21 +38,14 @@ type RootStackParamList = {
   };
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'BookAppointment'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'BookAppointment'>;
 
-const BookAppointmentScreen = ({route, navigation}: Props) => {
-  const {doctor} = route.params;
+const BookAppointmentScreen = ({ route, navigation }: Props) => {
+  const { doctor } = route.params;
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(
-    null,
-  );
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(
-    null,
-  );
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
   const [booking, setBooking] = useState(false);
 
@@ -100,9 +93,7 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
   const slots = useMemo(() => {
     const result: string[] = [];
 
-    const [hours, minutes] = doctor.startTime
-      .split(':')
-      .map(Number);
+    const [hours, minutes] = doctor.startTime.split(':').map(Number);
 
     const startMinutes = hours * 60 + minutes;
 
@@ -115,9 +106,7 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
       const formattedHours = String(slotHours).padStart(2, '0');
       const formattedMinutes = String(slotMinutes).padStart(2, '0');
 
-      result.push(
-        `${formattedHours}:${formattedMinutes}`,
-      );
+      result.push(`${formattedHours}:${formattedMinutes}`);
     }
 
     return result;
@@ -134,9 +123,7 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
   };
 
   const handleShowMore = () => {
-    setVisibleSlotCount(prev =>
-      Math.min(prev + 30, slots.length),
-    );
+    setVisibleSlotCount(prev => Math.min(prev + 30, slots.length));
   };
 
   const handleBookAppointment = async () => {
@@ -182,17 +169,13 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}>
-
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.eyebrow}>
-            BOOK APPOINTMENT
-          </Text>
+          <Text style={styles.eyebrow}>BOOK APPOINTMENT</Text>
 
-          <Text style={styles.title}>
-            Choose your date & time
-          </Text>
+          <Text style={styles.title}>Choose your date & time</Text>
 
           <Text style={styles.subtitle}>
             Select an available date and appointment slot.
@@ -206,13 +189,9 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
           </View>
 
           <View style={styles.doctorInfo}>
-            <Text style={styles.doctorName}>
-              {doctor.name}
-            </Text>
+            <Text style={styles.doctorName}>{doctor.name}</Text>
 
-            <Text style={styles.specialization}>
-              {doctor.specialization}
-            </Text>
+            <Text style={styles.specialization}>{doctor.specialization}</Text>
 
             <Text style={styles.fee}>
               Consultation ₹{doctor.consultationFee}
@@ -221,59 +200,50 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
         </View>
 
         {/* Date */}
-        <Text style={styles.sectionTitle}>
-          Select Date
-        </Text>
+        <Text style={styles.sectionTitle}>Select Date</Text>
 
         {dates.length === 0 ? (
           <View style={styles.emptyCard}>
-            <Text style={styles.emptyTitle}>
-              No available dates
-            </Text>
+            <Text style={styles.emptyTitle}>No available dates</Text>
 
             <Text style={styles.emptyText}>
-              This doctor has no available days in the
-              next 14 days.
+              This doctor has no available days in the next 14 days.
             </Text>
           </View>
         ) : (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.dateList}>
-
+            contentContainerStyle={styles.dateList}
+          >
             {dates.map(item => {
-              const isSelected =
-                selectedDate === item.date;
+              const isSelected = selectedDate === item.date;
 
               return (
                 <TouchableOpacity
                   key={item.date}
                   style={[
                     styles.dateCard,
-                    isSelected &&
-                      styles.selectedDateCard,
+                    isSelected && styles.selectedDateCard,
                   ]}
-                  onPress={() =>
-                    handleDateSelect(item.date)
-                  }
-                  activeOpacity={0.8}>
-
+                  onPress={() => handleDateSelect(item.date)}
+                  activeOpacity={0.8}
+                >
                   <Text
                     style={[
                       styles.dayName,
-                      isSelected &&
-                        styles.selectedDateText,
-                    ]}>
+                      isSelected && styles.selectedDateText,
+                    ]}
+                  >
                     {item.day.substring(0, 3)}
                   </Text>
 
                   <Text
                     style={[
                       styles.dayNumber,
-                      isSelected &&
-                        styles.selectedDateText,
-                    ]}>
+                      isSelected && styles.selectedDateText,
+                    ]}
+                  >
                     {item.dayNumber}
                   </Text>
                 </TouchableOpacity>
@@ -283,9 +253,7 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
         )}
 
         {/* Slots */}
-        <Text style={styles.sectionTitle}>
-          Available Slots
-        </Text>
+        <Text style={styles.sectionTitle}>Available Slots</Text>
 
         {!selectedDate ? (
           <View style={styles.infoCard}>
@@ -297,28 +265,24 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
           <>
             <View style={styles.slotGrid}>
               {visibleSlots.map(slot => {
-                const isSelected =
-                  selectedSlot === slot;
+                const isSelected = selectedSlot === slot;
 
                 return (
                   <TouchableOpacity
                     key={slot}
                     style={[
                       styles.slotButton,
-                      isSelected &&
-                        styles.selectedSlot,
+                      isSelected && styles.selectedSlot,
                     ]}
-                    onPress={() =>
-                      setSelectedSlot(slot)
-                    }
-                    activeOpacity={0.8}>
-
+                    onPress={() => setSelectedSlot(slot)}
+                    activeOpacity={0.8}
+                  >
                     <Text
                       style={[
                         styles.slotText,
-                        isSelected &&
-                          styles.selectedSlotText,
-                      ]}>
+                        isSelected && styles.selectedSlotText,
+                      ]}
+                    >
                       {slot}
                     </Text>
                   </TouchableOpacity>
@@ -331,15 +295,12 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
               <TouchableOpacity
                 style={styles.showMoreButton}
                 onPress={handleShowMore}
-                activeOpacity={0.8}>
-
-                <Text style={styles.showMoreText}>
-                  Show More Slots
-                </Text>
+                activeOpacity={0.8}
+              >
+                <Text style={styles.showMoreText}>Show More Slots</Text>
 
                 <Text style={styles.remainingText}>
-                  {slots.length - visibleSlotCount} more
-                  available
+                  {slots.length - visibleSlotCount} more available
                 </Text>
               </TouchableOpacity>
             )}
@@ -349,59 +310,39 @@ const BookAppointmentScreen = ({route, navigation}: Props) => {
         {/* Booking Summary */}
         {selectedDate && selectedSlot && (
           <View style={styles.summaryCard}>
-            <Text style={styles.summaryTitle}>
-              Appointment Summary
-            </Text>
+            <Text style={styles.summaryTitle}>Appointment Summary</Text>
 
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>
-                Doctor
-              </Text>
+              <Text style={styles.summaryLabel}>Doctor</Text>
 
-              <Text style={styles.summaryValue}>
-                {doctor.name}
-              </Text>
+              <Text style={styles.summaryValue}>{doctor.name}</Text>
             </View>
 
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>
-                Date
-              </Text>
+              <Text style={styles.summaryLabel}>Date</Text>
 
-              <Text style={styles.summaryValue}>
-                {selectedDate}
-              </Text>
+              <Text style={styles.summaryValue}>{selectedDate}</Text>
             </View>
 
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>
-                Time
-              </Text>
+              <Text style={styles.summaryLabel}>Time</Text>
 
-              <Text style={styles.summaryValue}>
-                {selectedSlot}
-              </Text>
+              <Text style={styles.summaryValue}>{selectedSlot}</Text>
             </View>
           </View>
         )}
 
         {/* Book Button */}
         <TouchableOpacity
-          style={[
-            styles.bookButton,
-            booking && styles.disabledButton,
-          ]}
+          style={[styles.bookButton, booking && styles.disabledButton]}
           onPress={handleBookAppointment}
           activeOpacity={0.8}
-          disabled={booking}>
-
+          disabled={booking}
+        >
           <Text style={styles.bookButtonText}>
-            {booking
-              ? 'Booking...'
-              : 'Confirm Appointment'}
+            {booking ? 'Booking...' : 'Confirm Appointment'}
           </Text>
         </TouchableOpacity>
-
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import api from '../../services/api';
 
@@ -37,13 +37,10 @@ type RootStackParamList = {
   AdminAppointments: undefined;
   AdminDoctors: undefined;
   AddDoctor: undefined;
-  EditDoctor: {doctor: Doctor};
+  EditDoctor: { doctor: Doctor };
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'EditDoctor'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'EditDoctor'>;
 
 const DAYS = [
   'Monday',
@@ -55,28 +52,18 @@ const DAYS = [
   'Sunday',
 ];
 
-const EditDoctorScreen = ({navigation, route}: Props) => {
-  const {doctor} = route.params;
+const EditDoctorScreen = ({ navigation, route }: Props) => {
+  const { doctor } = route.params;
 
   const [name, setName] = useState(doctor.name);
-  const [specialization, setSpecialization] = useState(
-    doctor.specialization,
-  );
-  const [qualification, setQualification] = useState(
-    doctor.qualification,
-  );
-  const [experience, setExperience] = useState(
-    String(doctor.experience),
-  );
+  const [specialization, setSpecialization] = useState(doctor.specialization);
+  const [qualification, setQualification] = useState(doctor.qualification);
+  const [experience, setExperience] = useState(String(doctor.experience));
   const [consultationFee, setConsultationFee] = useState(
     String(doctor.consultationFee),
   );
-  const [startTime, setStartTime] = useState(
-    doctor.startTime,
-  );
-  const [dailyTokens, setDailyTokens] = useState(
-    String(doctor.dailyTokens),
-  );
+  const [startTime, setStartTime] = useState(doctor.startTime);
+  const [dailyTokens, setDailyTokens] = useState(String(doctor.dailyTokens));
   const [availableDays, setAvailableDays] = useState<string[]>(
     doctor.availableDays,
   );
@@ -103,10 +90,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
       !startTime.trim() ||
       !dailyTokens.trim()
     ) {
-      Alert.alert(
-        'Missing Information',
-        'Please fill all required fields.',
-      );
+      Alert.alert('Missing Information', 'Please fill all required fields.');
       return;
     }
 
@@ -122,36 +106,18 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
     const consultationFeeNumber = Number(consultationFee);
     const dailyTokensNumber = Number(dailyTokens);
 
-    if (
-      Number.isNaN(experienceNumber) ||
-      experienceNumber < 0
-    ) {
-      Alert.alert(
-        'Invalid Experience',
-        'Please enter a valid experience.',
-      );
+    if (Number.isNaN(experienceNumber) || experienceNumber < 0) {
+      Alert.alert('Invalid Experience', 'Please enter a valid experience.');
       return;
     }
 
-    if (
-      Number.isNaN(consultationFeeNumber) ||
-      consultationFeeNumber < 0
-    ) {
-      Alert.alert(
-        'Invalid Fee',
-        'Please enter a valid consultation fee.',
-      );
+    if (Number.isNaN(consultationFeeNumber) || consultationFeeNumber < 0) {
+      Alert.alert('Invalid Fee', 'Please enter a valid consultation fee.');
       return;
     }
 
-    if (
-      Number.isNaN(dailyTokensNumber) ||
-      dailyTokensNumber < 1
-    ) {
-      Alert.alert(
-        'Invalid Tokens',
-        'Daily tokens must be at least 1.',
-      );
+    if (Number.isNaN(dailyTokensNumber) || dailyTokensNumber < 1) {
+      Alert.alert('Invalid Tokens', 'Daily tokens must be at least 1.');
       return;
     }
 
@@ -177,16 +143,12 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
         dailyTokens: dailyTokensNumber,
       });
 
-      Alert.alert(
-        'Success',
-        'Doctor updated successfully.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.goBack(),
-          },
-        ],
-      );
+      Alert.alert('Success', 'Doctor updated successfully.', [
+        {
+          text: 'OK',
+          onPress: () => navigation.goBack(),
+        },
+      ]);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
@@ -202,19 +164,16 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
-        behavior={
-          Platform.OS === 'ios' ? 'padding' : undefined
-        }>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
-          
+          showsVerticalScrollIndicator={false}
+        >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>
-              Edit Doctor
-            </Text>
+            <Text style={styles.title}>Edit Doctor</Text>
 
             <Text style={styles.subtitle}>
               Update doctor details and availability
@@ -222,14 +181,10 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
           </View>
 
           {/* Basic Information */}
-          <Text style={styles.sectionTitle}>
-            Basic Information
-          </Text>
+          <Text style={styles.sectionTitle}>Basic Information</Text>
 
           <View style={styles.formCard}>
-            <Text style={styles.label}>
-              Doctor Name *
-            </Text>
+            <Text style={styles.label}>Doctor Name *</Text>
 
             <TextInput
               style={styles.input}
@@ -240,9 +195,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               autoCapitalize="words"
             />
 
-            <Text style={styles.label}>
-              Specialization *
-            </Text>
+            <Text style={styles.label}>Specialization *</Text>
 
             <TextInput
               style={styles.input}
@@ -253,9 +206,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               autoCapitalize="words"
             />
 
-            <Text style={styles.label}>
-              Qualification *
-            </Text>
+            <Text style={styles.label}>Qualification *</Text>
 
             <TextInput
               style={styles.input}
@@ -266,9 +217,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               autoCapitalize="characters"
             />
 
-            <Text style={styles.label}>
-              Experience (Years) *
-            </Text>
+            <Text style={styles.label}>Experience (Years) *</Text>
 
             <TextInput
               style={styles.input}
@@ -279,9 +228,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               keyboardType="numeric"
             />
 
-            <Text style={styles.label}>
-              Consultation Fee *
-            </Text>
+            <Text style={styles.label}>Consultation Fee *</Text>
 
             <TextInput
               style={styles.input}
@@ -294,36 +241,31 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
           </View>
 
           {/* Availability */}
-          <Text style={styles.sectionTitle}>
-            Availability
-          </Text>
+          <Text style={styles.sectionTitle}>Availability</Text>
 
           <View style={styles.formCard}>
-            <Text style={styles.label}>
-              Available Days *
-            </Text>
+            <Text style={styles.label}>Available Days *</Text>
 
             <View style={styles.daysContainer}>
               {DAYS.map(day => {
-                const selected =
-                  availableDays.includes(day);
+                const selected = availableDays.includes(day);
 
                 return (
                   <TouchableOpacity
                     key={day}
                     style={[
                       styles.dayButton,
-                      selected &&
-                        styles.dayButtonSelected,
+                      selected && styles.dayButtonSelected,
                     ]}
                     activeOpacity={0.8}
-                    onPress={() => toggleDay(day)}>
+                    onPress={() => toggleDay(day)}
+                  >
                     <Text
                       style={[
                         styles.dayButtonText,
-                        selected &&
-                          styles.dayButtonTextSelected,
-                      ]}>
+                        selected && styles.dayButtonTextSelected,
+                      ]}
+                    >
                       {day.substring(0, 3)}
                     </Text>
                   </TouchableOpacity>
@@ -331,9 +273,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               })}
             </View>
 
-            <Text style={styles.label}>
-              Start Time *
-            </Text>
+            <Text style={styles.label}>Start Time *</Text>
 
             <TextInput
               style={styles.input}
@@ -349,9 +289,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               Use 24-hour format. Example: 09:00 or 14:30
             </Text>
 
-            <Text style={styles.label}>
-              Daily Tokens *
-            </Text>
+            <Text style={styles.label}>Daily Tokens *</Text>
 
             <TextInput
               style={styles.input}
@@ -362,9 +300,7 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
               keyboardType="numeric"
             />
 
-            <Text style={styles.helperText}>
-              Each token is 5 minutes.
-            </Text>
+            <Text style={styles.helperText}>Each token is 5 minutes.</Text>
           </View>
 
           {/* Update Button */}
@@ -375,16 +311,12 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
             ]}
             activeOpacity={0.8}
             onPress={handleUpdateDoctor}
-            disabled={loading}>
+            disabled={loading}
+          >
             {loading ? (
-              <ActivityIndicator
-                size="small"
-                color="#FFFFFF"
-              />
+              <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
-              <Text style={styles.updateButtonText}>
-                Update Doctor
-              </Text>
+              <Text style={styles.updateButtonText}>Update Doctor</Text>
             )}
           </TouchableOpacity>
 
@@ -392,10 +324,9 @@ const EditDoctorScreen = ({navigation, route}: Props) => {
             style={styles.cancelButton}
             activeOpacity={0.8}
             onPress={() => navigation.goBack()}
-            disabled={loading}>
-            <Text style={styles.cancelButtonText}>
-              Cancel
-            </Text>
+            disabled={loading}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

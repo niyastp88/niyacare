@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-  baseURL: 'http://10.23.197.214:5000/api',
+  baseURL: 'https://niyacare.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },

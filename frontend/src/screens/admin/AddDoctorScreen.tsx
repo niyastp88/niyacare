@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import api from '../../services/api';
 
@@ -26,10 +26,7 @@ type RootStackParamList = {
   AddDoctor: undefined;
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'AddDoctor'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'AddDoctor'>;
 
 const DAYS = [
   'Monday',
@@ -41,7 +38,7 @@ const DAYS = [
   'Sunday',
 ];
 
-const AddDoctorScreen = ({navigation}: Props) => {
+const AddDoctorScreen = ({ navigation }: Props) => {
   const [name, setName] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [qualification, setQualification] = useState('');
@@ -73,10 +70,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
       !startTime.trim() ||
       !dailyTokens.trim()
     ) {
-      Alert.alert(
-        'Missing Information',
-        'Please fill all required fields.',
-      );
+      Alert.alert('Missing Information', 'Please fill all required fields.');
       return;
     }
 
@@ -92,36 +86,18 @@ const AddDoctorScreen = ({navigation}: Props) => {
     const consultationFeeNumber = Number(consultationFee);
     const dailyTokensNumber = Number(dailyTokens);
 
-    if (
-      Number.isNaN(experienceNumber) ||
-      experienceNumber < 0
-    ) {
-      Alert.alert(
-        'Invalid Experience',
-        'Please enter a valid experience.',
-      );
+    if (Number.isNaN(experienceNumber) || experienceNumber < 0) {
+      Alert.alert('Invalid Experience', 'Please enter a valid experience.');
       return;
     }
 
-    if (
-      Number.isNaN(consultationFeeNumber) ||
-      consultationFeeNumber < 0
-    ) {
-      Alert.alert(
-        'Invalid Fee',
-        'Please enter a valid consultation fee.',
-      );
+    if (Number.isNaN(consultationFeeNumber) || consultationFeeNumber < 0) {
+      Alert.alert('Invalid Fee', 'Please enter a valid consultation fee.');
       return;
     }
 
-    if (
-      Number.isNaN(dailyTokensNumber) ||
-      dailyTokensNumber < 1
-    ) {
-      Alert.alert(
-        'Invalid Tokens',
-        'Daily tokens must be at least 1.',
-      );
+    if (Number.isNaN(dailyTokensNumber) || dailyTokensNumber < 1) {
+      Alert.alert('Invalid Tokens', 'Daily tokens must be at least 1.');
       return;
     }
 
@@ -147,16 +123,12 @@ const AddDoctorScreen = ({navigation}: Props) => {
         dailyTokens: dailyTokensNumber,
       });
 
-      Alert.alert(
-        'Success',
-        'Doctor added successfully.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.goBack(),
-          },
-        ],
-      );
+      Alert.alert('Success', 'Doctor added successfully.', [
+        {
+          text: 'OK',
+          onPress: () => navigation.goBack(),
+        },
+      ]);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
@@ -172,19 +144,16 @@ const AddDoctorScreen = ({navigation}: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
-        behavior={
-          Platform.OS === 'ios' ? 'padding' : undefined
-        }>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
-          
+          showsVerticalScrollIndicator={false}
+        >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>
-              Add Doctor
-            </Text>
+            <Text style={styles.title}>Add Doctor</Text>
 
             <Text style={styles.subtitle}>
               Add doctor details and availability
@@ -192,14 +161,10 @@ const AddDoctorScreen = ({navigation}: Props) => {
           </View>
 
           {/* Basic Information */}
-          <Text style={styles.sectionTitle}>
-            Basic Information
-          </Text>
+          <Text style={styles.sectionTitle}>Basic Information</Text>
 
           <View style={styles.formCard}>
-            <Text style={styles.label}>
-              Doctor Name *
-            </Text>
+            <Text style={styles.label}>Doctor Name *</Text>
 
             <TextInput
               style={styles.input}
@@ -210,9 +175,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
               autoCapitalize="words"
             />
 
-            <Text style={styles.label}>
-              Specialization *
-            </Text>
+            <Text style={styles.label}>Specialization *</Text>
 
             <TextInput
               style={styles.input}
@@ -223,9 +186,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
               autoCapitalize="words"
             />
 
-            <Text style={styles.label}>
-              Qualification *
-            </Text>
+            <Text style={styles.label}>Qualification *</Text>
 
             <TextInput
               style={styles.input}
@@ -236,9 +197,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
               autoCapitalize="characters"
             />
 
-            <Text style={styles.label}>
-              Experience (Years) *
-            </Text>
+            <Text style={styles.label}>Experience (Years) *</Text>
 
             <TextInput
               style={styles.input}
@@ -249,9 +208,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
               keyboardType="numeric"
             />
 
-            <Text style={styles.label}>
-              Consultation Fee *
-            </Text>
+            <Text style={styles.label}>Consultation Fee *</Text>
 
             <TextInput
               style={styles.input}
@@ -264,19 +221,14 @@ const AddDoctorScreen = ({navigation}: Props) => {
           </View>
 
           {/* Availability */}
-          <Text style={styles.sectionTitle}>
-            Availability
-          </Text>
+          <Text style={styles.sectionTitle}>Availability</Text>
 
           <View style={styles.formCard}>
-            <Text style={styles.label}>
-              Available Days *
-            </Text>
+            <Text style={styles.label}>Available Days *</Text>
 
             <View style={styles.daysContainer}>
               {DAYS.map(day => {
-                const selected =
-                  availableDays.includes(day);
+                const selected = availableDays.includes(day);
 
                 return (
                   <TouchableOpacity
@@ -286,13 +238,14 @@ const AddDoctorScreen = ({navigation}: Props) => {
                       selected && styles.dayButtonSelected,
                     ]}
                     activeOpacity={0.8}
-                    onPress={() => toggleDay(day)}>
+                    onPress={() => toggleDay(day)}
+                  >
                     <Text
                       style={[
                         styles.dayButtonText,
-                        selected &&
-                          styles.dayButtonTextSelected,
-                      ]}>
+                        selected && styles.dayButtonTextSelected,
+                      ]}
+                    >
                       {day.substring(0, 3)}
                     </Text>
                   </TouchableOpacity>
@@ -300,9 +253,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
               })}
             </View>
 
-            <Text style={styles.label}>
-              Start Time *
-            </Text>
+            <Text style={styles.label}>Start Time *</Text>
 
             <TextInput
               style={styles.input}
@@ -318,9 +269,7 @@ const AddDoctorScreen = ({navigation}: Props) => {
               Use 24-hour format. Example: 09:00 or 14:30
             </Text>
 
-            <Text style={styles.label}>
-              Daily Tokens *
-            </Text>
+            <Text style={styles.label}>Daily Tokens *</Text>
 
             <TextInput
               style={styles.input}
@@ -331,29 +280,20 @@ const AddDoctorScreen = ({navigation}: Props) => {
               keyboardType="numeric"
             />
 
-            <Text style={styles.helperText}>
-              Each token is 5 minutes.
-            </Text>
+            <Text style={styles.helperText}>Each token is 5 minutes.</Text>
           </View>
 
           {/* Add Button */}
           <TouchableOpacity
-            style={[
-              styles.addButton,
-              loading && styles.addButtonDisabled,
-            ]}
+            style={[styles.addButton, loading && styles.addButtonDisabled]}
             activeOpacity={0.8}
             onPress={handleAddDoctor}
-            disabled={loading}>
+            disabled={loading}
+          >
             {loading ? (
-              <ActivityIndicator
-                size="small"
-                color="#FFFFFF"
-              />
+              <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
-              <Text style={styles.addButtonText}>
-                Add Doctor
-              </Text>
+              <Text style={styles.addButtonText}>Add Doctor</Text>
             )}
           </TouchableOpacity>
 
@@ -361,10 +301,9 @@ const AddDoctorScreen = ({navigation}: Props) => {
             style={styles.cancelButton}
             activeOpacity={0.8}
             onPress={() => navigation.goBack()}
-            disabled={loading}>
-            <Text style={styles.cancelButtonText}>
-              Cancel
-            </Text>
+            disabled={loading}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

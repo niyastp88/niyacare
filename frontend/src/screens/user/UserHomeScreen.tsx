@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
@@ -20,55 +20,43 @@ type RootStackParamList = {
   MyAppointments: undefined;
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'UserHome'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'UserHome'>;
 
-const UserHomeScreen = ({navigation}: Props) => {
+const UserHomeScreen = ({ navigation }: Props) => {
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await AsyncStorage.removeItem('token');
-              await AsyncStorage.removeItem('user');
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('user');
 
-              navigation.replace('Login');
-            } catch (error) {
-              console.log('Logout error:', error);
+            navigation.replace('Login');
+          } catch (error) {
+            console.log('Logout error:', error);
 
-              Alert.alert(
-                'Logout Failed',
-                'Unable to logout. Please try again.',
-              );
-            }
-          },
+            Alert.alert('Logout Failed', 'Unable to logout. Please try again.');
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}>
-
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>
-            Welcome to NiyaCare
-          </Text>
+          <Text style={styles.title}>Welcome to NiyaCare</Text>
         </View>
 
         {/* Hero Card */}
@@ -79,19 +67,15 @@ const UserHomeScreen = ({navigation}: Props) => {
             </Text>
 
             <Text style={styles.heroDescription}>
-              Find trusted doctors and book your
-              appointment easily.
+              Find trusted doctors and book your appointment easily.
             </Text>
 
             <TouchableOpacity
               style={styles.primaryButton}
               activeOpacity={0.8}
-              onPress={() =>
-                navigation.navigate('DoctorList')
-              }>
-              <Text style={styles.primaryButtonText}>
-                Find a Doctor
-              </Text>
+              onPress={() => navigation.navigate('DoctorList')}
+            >
+              <Text style={styles.primaryButtonText}>Find a Doctor</Text>
             </TouchableOpacity>
           </View>
 
@@ -101,80 +85,51 @@ const UserHomeScreen = ({navigation}: Props) => {
         </View>
 
         {/* Quick Actions */}
-        <Text style={styles.sectionTitle}>
-          Quick Actions
-        </Text>
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
 
         <View style={styles.actionGrid}>
           {/* Find Doctor */}
           <TouchableOpacity
             style={styles.actionCard}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation.navigate('DoctorList')
-            }>
-            <View
-              style={[
-                styles.actionIcon,
-                styles.doctorIcon,
-              ]}>
-              <Text style={styles.iconText}>
-                +
-              </Text>
+            onPress={() => navigation.navigate('DoctorList')}
+          >
+            <View style={[styles.actionIcon, styles.doctorIcon]}>
+              <Text style={styles.iconText}>+</Text>
             </View>
 
-            <Text style={styles.actionTitle}>
-              Find Doctor
-            </Text>
+            <Text style={styles.actionTitle}>Find Doctor</Text>
 
-            <Text style={styles.actionDescription}>
-              Browse specialists
-            </Text>
+            <Text style={styles.actionDescription}>Browse specialists</Text>
           </TouchableOpacity>
 
           {/* Appointments */}
           <TouchableOpacity
             style={styles.actionCard}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation.navigate('MyAppointments')
-            }>
-            <View
-              style={[
-                styles.actionIcon,
-                styles.appointmentIcon,
-              ]}>
-              <Text style={styles.iconText}>
-                ✓
-              </Text>
+            onPress={() => navigation.navigate('MyAppointments')}
+          >
+            <View style={[styles.actionIcon, styles.appointmentIcon]}>
+              <Text style={styles.iconText}>✓</Text>
             </View>
 
-            <Text style={styles.actionTitle}>
-              Appointments
-            </Text>
+            <Text style={styles.actionTitle}>Appointments</Text>
 
-            <Text style={styles.actionDescription}>
-              View your bookings
-            </Text>
+            <Text style={styles.actionDescription}>View your bookings</Text>
           </TouchableOpacity>
         </View>
 
         {/* Health Tip */}
         <View style={styles.tipCard}>
           <View style={styles.tipIcon}>
-            <Text style={styles.tipIconText}>
-              ♥
-            </Text>
+            <Text style={styles.tipIconText}>♥</Text>
           </View>
 
           <View style={styles.tipContent}>
-            <Text style={styles.tipTitle}>
-              Health Tip
-            </Text>
+            <Text style={styles.tipTitle}>Health Tip</Text>
 
             <Text style={styles.tipText}>
-              Regular health checkups can help
-              detect health problems early.
+              Regular health checkups can help detect health problems early.
             </Text>
           </View>
         </View>
@@ -183,12 +138,11 @@ const UserHomeScreen = ({navigation}: Props) => {
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={handleLogout}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+        >
           <Text style={styles.logoutIcon}>↪</Text>
 
-          <Text style={styles.logoutText}>
-            Logout
-          </Text>
+          <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

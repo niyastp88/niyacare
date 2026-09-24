@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import api from '../../services/api';
 
@@ -35,12 +35,9 @@ type RootStackParamList = {
   };
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'DoctorList'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'DoctorList'>;
 
-const DoctorListScreen = ({navigation}: Props) => {
+const DoctorListScreen = ({ navigation }: Props) => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -68,7 +65,7 @@ const DoctorListScreen = ({navigation}: Props) => {
     fetchDoctors();
   }, []);
 
-  const renderDoctor = ({item}: {item: Doctor}) => {
+  const renderDoctor = ({ item }: { item: Doctor }) => {
     return (
       <TouchableOpacity
         style={styles.card}
@@ -77,7 +74,8 @@ const DoctorListScreen = ({navigation}: Props) => {
           navigation.navigate('DoctorDetails', {
             doctor: item,
           })
-        }>
+        }
+      >
         {/* Doctor Avatar */}
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>DR</Text>
@@ -87,9 +85,7 @@ const DoctorListScreen = ({navigation}: Props) => {
         <View style={styles.info}>
           <Text style={styles.name}>{item.name}</Text>
 
-          <Text style={styles.specialization}>
-            {item.specialization}
-          </Text>
+          <Text style={styles.specialization}>{item.specialization}</Text>
 
           <Text style={styles.qualification}>
             {item.qualification} • {item.experience} years experience
@@ -99,17 +95,13 @@ const DoctorListScreen = ({navigation}: Props) => {
             <View style={styles.feeContainer}>
               <Text style={styles.feeLabel}>Fee</Text>
 
-              <Text style={styles.fee}>
-                ₹{item.consultationFee}
-              </Text>
+              <Text style={styles.fee}>₹{item.consultationFee}</Text>
             </View>
 
             <View style={styles.tokenContainer}>
               <Text style={styles.tokenLabel}>Tokens</Text>
 
-              <Text style={styles.availability}>
-                {item.dailyTokens}/day
-              </Text>
+              <Text style={styles.availability}>{item.dailyTokens}/day</Text>
             </View>
           </View>
         </View>
@@ -126,19 +118,12 @@ const DoctorListScreen = ({navigation}: Props) => {
     return (
       <View style={styles.center}>
         <View style={styles.loaderContainer}>
-          <ActivityIndicator
-            size="large"
-            color="#0F9D9A"
-          />
+          <ActivityIndicator size="large" color="#0F9D9A" />
         </View>
 
-        <Text style={styles.loadingText}>
-          Finding doctors...
-        </Text>
+        <Text style={styles.loadingText}>Finding doctors...</Text>
 
-        <Text style={styles.loadingSubtext}>
-          Please wait a moment
-        </Text>
+        <Text style={styles.loadingSubtext}>Please wait a moment</Text>
       </View>
     );
   }
@@ -150,21 +135,16 @@ const DoctorListScreen = ({navigation}: Props) => {
           <Text style={styles.errorIconText}>!</Text>
         </View>
 
-        <Text style={styles.errorTitle}>
-          Something went wrong
-        </Text>
+        <Text style={styles.errorTitle}>Something went wrong</Text>
 
-        <Text style={styles.errorText}>
-          {error}
-        </Text>
+        <Text style={styles.errorText}>{error}</Text>
 
         <TouchableOpacity
           style={styles.retryButton}
           activeOpacity={0.9}
-          onPress={fetchDoctors}>
-          <Text style={styles.retryText}>
-            Try Again
-          </Text>
+          onPress={fetchDoctors}
+        >
+          <Text style={styles.retryText}>Try Again</Text>
         </TouchableOpacity>
       </View>
     );
@@ -174,13 +154,9 @@ const DoctorListScreen = ({navigation}: Props) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.eyebrow}>
-          NIYACARE
-        </Text>
+        <Text style={styles.eyebrow}>NIYACARE</Text>
 
-        <Text style={styles.title}>
-          Find a Doctor
-        </Text>
+        <Text style={styles.title}>Find a Doctor</Text>
 
         <Text style={styles.subtitle}>
           Choose a doctor and book your appointment
@@ -190,14 +166,10 @@ const DoctorListScreen = ({navigation}: Props) => {
       {/* Doctor Count */}
       {doctors.length > 0 && (
         <View style={styles.resultHeader}>
-          <Text style={styles.resultText}>
-            Available Doctors
-          </Text>
+          <Text style={styles.resultText}>Available Doctors</Text>
 
           <View style={styles.countBadge}>
-            <Text style={styles.countText}>
-              {doctors.length}
-            </Text>
+            <Text style={styles.countText}>{doctors.length}</Text>
           </View>
         </View>
       )}
@@ -209,13 +181,10 @@ const DoctorListScreen = ({navigation}: Props) => {
             <Text style={styles.emptyIconText}>+</Text>
           </View>
 
-          <Text style={styles.emptyTitle}>
-            No doctors available
-          </Text>
+          <Text style={styles.emptyTitle}>No doctors available</Text>
 
           <Text style={styles.emptyText}>
-            Doctors will appear here when they are added
-            by the admin.
+            Doctors will appear here when they are added by the admin.
           </Text>
         </View>
       ) : (

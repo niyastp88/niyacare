@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -9,9 +9,9 @@ import {
   View,
 } from 'react-native';
 
-import {forgotPassword} from '../../services/authService';
+import { forgotPassword } from '../../services/authService';
 
-const ForgotPasswordScreen = ({navigation}: any) => {
+const ForgotPasswordScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -42,8 +42,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
     } catch (error: any) {
       Alert.alert(
         'Error',
-        error?.response?.data?.message ||
-          'Failed to send OTP',
+        error?.response?.data?.message || 'Failed to send OTP',
       );
     } finally {
       setLoading(false);
@@ -56,8 +55,8 @@ const ForgotPasswordScreen = ({navigation}: any) => {
         <Text style={styles.title}>Forgot Password?</Text>
 
         <Text style={styles.subtitle}>
-          Enter your registered email address and we will
-          send you an OTP to reset your password.
+          Enter your registered email address and we will send you an OTP to
+          reset your password.
         </Text>
 
         <Text style={styles.label}>Email</Text>
@@ -73,12 +72,10 @@ const ForgotPasswordScreen = ({navigation}: any) => {
         />
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            loading && styles.disabledButton,
-          ]}
+          style={[styles.button, loading && styles.disabledButton]}
           onPress={handleSendOtp}
-          disabled={loading}>
+          disabled={loading}
+        >
           <Text style={styles.buttonText}>
             {loading ? 'Sending...' : 'Send OTP'}
           </Text>
@@ -86,10 +83,9 @@ const ForgotPasswordScreen = ({navigation}: any) => {
 
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Text style={styles.backText}>
-            Back to Login
-          </Text>
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>Back to Login</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

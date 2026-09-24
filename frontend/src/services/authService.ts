@@ -31,10 +31,7 @@ export const forgotPassword = async (email: string) => {
 };
 
 // Verify OTP
-export const verifyOtp = async (
-  email: string,
-  otp: string,
-) => {
+export const verifyOtp = async (email: string, otp: string) => {
   const response = await api.post('/auth/verify-otp', {
     email,
     otp,
@@ -44,10 +41,7 @@ export const verifyOtp = async (
 };
 
 // Reset Password
-export const resetPassword = async (
-  email: string,
-  newPassword: string,
-) => {
+export const resetPassword = async (email: string, newPassword: string) => {
   const response = await api.post('/auth/reset-password', {
     email,
     newPassword,

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -8,8 +8,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import api from '../../services/api';
 
@@ -47,12 +47,9 @@ type RootStackParamList = {
   MyAppointments: undefined;
 };
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'MyAppointments'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'MyAppointments'>;
 
-const MyAppointmentsScreen = ({navigation}: Props) => {
+const MyAppointmentsScreen = ({ navigation }: Props) => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -129,9 +126,7 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
           </View>
 
           <View style={styles.doctorInfo}>
-            <Text style={styles.doctorName}>
-              {appointment.doctor.name}
-            </Text>
+            <Text style={styles.doctorName}>{appointment.doctor.name}</Text>
 
             <Text style={styles.specialization}>
               {appointment.doctor.specialization}
@@ -139,15 +134,14 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
           </View>
 
           <View
-            style={[
-              styles.statusBadge,
-              getStatusStyle(appointment.status),
-            ]}>
+            style={[styles.statusBadge, getStatusStyle(appointment.status)]}
+          >
             <Text
               style={[
                 styles.statusText,
                 getStatusTextStyle(appointment.status),
-              ]}>
+              ]}
+            >
               {appointment.status.charAt(0).toUpperCase() +
                 appointment.status.slice(1)}
             </Text>
@@ -159,23 +153,17 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
         <View style={styles.detailsRow}>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Date</Text>
-            <Text style={styles.detailValue}>
-              {appointment.date}
-            </Text>
+            <Text style={styles.detailValue}>{appointment.date}</Text>
           </View>
 
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Time</Text>
-            <Text style={styles.detailValue}>
-              {appointment.slot}
-            </Text>
+            <Text style={styles.detailValue}>{appointment.slot}</Text>
           </View>
 
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Token</Text>
-            <Text style={styles.detailValue}>
-              #{appointment.tokenNumber}
-            </Text>
+            <Text style={styles.detailValue}>#{appointment.tokenNumber}</Text>
           </View>
         </View>
       </View>
@@ -187,9 +175,7 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color="#0F9D9A" />
-          <Text style={styles.loadingText}>
-            Loading appointments...
-          </Text>
+          <Text style={styles.loadingText}>Loading appointments...</Text>
         </View>
       </SafeAreaView>
     );
@@ -206,15 +192,13 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
             onRefresh={handleRefresh}
             colors={['#0F9D9A']}
           />
-        }>
-
+        }
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.eyebrow}>MY APPOINTMENTS</Text>
 
-          <Text style={styles.title}>
-            Your appointments
-          </Text>
+          <Text style={styles.title}>Your appointments</Text>
 
           <Text style={styles.subtitle}>
             View and track all your doctor appointments.
@@ -224,13 +208,9 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
         {/* Error */}
         {error ? (
           <View style={styles.errorCard}>
-            <Text style={styles.errorTitle}>
-              Something went wrong
-            </Text>
+            <Text style={styles.errorTitle}>Something went wrong</Text>
 
-            <Text style={styles.errorText}>
-              {error}
-            </Text>
+            <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
 
@@ -241,13 +221,10 @@ const MyAppointmentsScreen = ({navigation}: Props) => {
               <Text style={styles.emptyIconText}>+</Text>
             </View>
 
-            <Text style={styles.emptyTitle}>
-              No appointments yet
-            </Text>
+            <Text style={styles.emptyTitle}>No appointments yet</Text>
 
             <Text style={styles.emptyText}>
-              Book an appointment with a doctor to see it
-              here.
+              Book an appointment with a doctor to see it here.
             </Text>
           </View>
         ) : null}
