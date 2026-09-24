@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IDoctor extends Document {
   name: string;
@@ -47,20 +47,20 @@ const doctorSchema = new Schema<IDoctor>(
 
     image: {
       type: String,
-      default: '',
+      default: "",
     },
 
     availableDays: {
       type: [String],
       required: true,
       enum: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
       ],
     },
 
@@ -81,12 +81,9 @@ const doctorSchema = new Schema<IDoctor>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-const Doctor = mongoose.model<IDoctor>(
-  'Doctor',
-  doctorSchema
-);
+const Doctor = mongoose.model<IDoctor>("Doctor", doctorSchema);
 
 export default Doctor;

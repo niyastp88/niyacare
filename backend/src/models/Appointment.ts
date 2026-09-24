@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IAppointment extends Document {
   user: mongoose.Types.ObjectId;
@@ -6,20 +6,20 @@ export interface IAppointment extends Document {
   date: string;
   slot: string;
   tokenNumber: number;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  status: "pending" | "confirmed" | "cancelled" | "completed";
 }
 
 const appointmentSchema = new Schema<IAppointment>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
 
     doctor: {
       type: Schema.Types.ObjectId,
-      ref: 'Doctor',
+      ref: "Doctor",
       required: true,
     },
 
@@ -41,18 +41,18 @@ const appointmentSchema = new Schema<IAppointment>(
 
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled', 'completed'],
-      default: 'pending',
+      enum: ["pending", "confirmed", "cancelled", "completed"],
+      default: "pending",
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Appointment = mongoose.model<IAppointment>(
-  'Appointment',
-  appointmentSchema
+  "Appointment",
+  appointmentSchema,
 );
 
 export default Appointment;

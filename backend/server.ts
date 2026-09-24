@@ -10,8 +10,6 @@ import appointmentRoutes from './src/routes/appointmentRoutes';
 import dashboardRoutes from './src/routes/dashboardRoutes';
 
 
-
-
 const app = express();
 
 app.use(cors());
@@ -29,7 +27,6 @@ app.get('/', (_req, res) => {
     message: 'NiyaCare API is running',
   });
 });
-
 
 
 const PORT = process.env.PORT || 5000;

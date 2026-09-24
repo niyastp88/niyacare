@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import Doctor from '../models/Doctor';
+import Doctor from "../models/Doctor";
 
 // Calculate maximum tokens from start time until midnight
 const getMaxTokens = (startTime: string): number => {
-  const [hours, minutes] = startTime.split(':').map(Number);
+  const [hours, minutes] = startTime.split(":").map(Number);
 
   const startMinutes = hours * 60 + minutes;
   const minutesUntilMidnight = 24 * 60 - startMinutes;
@@ -14,7 +14,7 @@ const getMaxTokens = (startTime: string): number => {
 
 export const createDoctor = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const {
@@ -40,7 +40,7 @@ export const createDoctor = async (
       dailyTokens === undefined
     ) {
       res.status(400).json({
-        message: 'All required fields are required',
+        message: "All required fields are required",
       });
       return;
     }
@@ -50,7 +50,7 @@ export const createDoctor = async (
 
     if (!timeRegex.test(startTime)) {
       res.status(400).json({
-        message: 'Invalid start time. Use HH:mm format',
+        message: "Invalid start time. Use HH:mm format",
       });
       return;
     }
@@ -68,7 +68,7 @@ export const createDoctor = async (
 
     if (Number(dailyTokens) < 1) {
       res.status(400).json({
-        message: 'Daily tokens must be at least 1',
+        message: "Daily tokens must be at least 1",
       });
       return;
     }
@@ -79,33 +79,33 @@ export const createDoctor = async (
       qualification,
       experience,
       consultationFee,
-      image: image || '',
+      image: image || "",
       availableDays,
       startTime,
       dailyTokens,
     });
 
     res.status(201).json({
-      message: 'Doctor created successfully',
+      message: "Doctor created successfully",
       doctor,
     });
   } catch (error) {
-    console.error('Create doctor error:', error);
+    console.error("Create doctor error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
 export const getDoctors = async (
   _req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const doctors = await Doctor.find({
-  isActive: true,
-}).sort({
+      isActive: true,
+    }).sort({
       createdAt: -1,
     });
 
@@ -113,17 +113,17 @@ export const getDoctors = async (
       doctors,
     });
   } catch (error) {
-    console.error('Get doctors error:', error);
+    console.error("Get doctors error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
 export const getAdminDoctors = async (
   _req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const doctors = await Doctor.find().sort({
@@ -134,27 +134,24 @@ export const getAdminDoctors = async (
       doctors,
     });
   } catch (error) {
-    console.error(
-      'Get admin doctors error:',
-      error
-    );
+    console.error("Get admin doctors error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
 export const getDoctorById = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const doctor = await Doctor.findById(req.params.id);
 
     if (!doctor) {
       res.status(404).json({
-        message: 'Doctor not found',
+        message: "Doctor not found",
       });
       return;
     }
@@ -163,51 +160,47 @@ export const getDoctorById = async (
       doctor,
     });
   } catch (error) {
-    console.error('Get doctor error:', error);
+    console.error("Get doctor error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
 export const updateDoctor = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
-    const doctor = await Doctor.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const doctor = await Doctor.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!doctor) {
       res.status(404).json({
-        message: 'Doctor not found',
+        message: "Doctor not found",
       });
       return;
     }
 
     res.status(200).json({
-      message: 'Doctor updated successfully',
+      message: "Doctor updated successfully",
       doctor,
     });
   } catch (error) {
-    console.error('Update doctor error:', error);
+    console.error("Update doctor error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
 export const deactivateDoctor = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const doctor = await Doctor.findByIdAndUpdate(
@@ -217,35 +210,32 @@ export const deactivateDoctor = async (
       },
       {
         new: true,
-      }
+      },
     );
 
     if (!doctor) {
       res.status(404).json({
-        message: 'Doctor not found',
+        message: "Doctor not found",
       });
       return;
     }
 
     res.status(200).json({
-      message: 'Doctor deactivated successfully',
+      message: "Doctor deactivated successfully",
       doctor,
     });
   } catch (error) {
-    console.error(
-      'Deactivate doctor error:',
-      error
-    );
+    console.error("Deactivate doctor error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };
 
 export const activateDoctor = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const doctor = await Doctor.findByIdAndUpdate(
@@ -255,28 +245,25 @@ export const activateDoctor = async (
       },
       {
         new: true,
-      }
+      },
     );
 
     if (!doctor) {
       res.status(404).json({
-        message: 'Doctor not found',
+        message: "Doctor not found",
       });
       return;
     }
 
     res.status(200).json({
-      message: 'Doctor activated successfully',
+      message: "Doctor activated successfully",
       doctor,
     });
   } catch (error) {
-    console.error(
-      'Activate doctor error:',
-      error
-    );
+    console.error("Activate doctor error:", error);
 
     res.status(500).json({
-      message: 'Server error',
+      message: "Server error",
     });
   }
 };

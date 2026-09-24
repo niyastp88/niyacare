@@ -27,7 +27,7 @@ export const createAppointment = async (
       return;
     }
 
-    // Find doctor
+
     const doctor = await Doctor.findById(doctorId);
 
     if (!doctor) {
@@ -37,7 +37,7 @@ export const createAppointment = async (
       return;
     }
 
-    // Get weekday from selected date
+  
     const selectedDate = new Date(`${date}T00:00:00`);
 
     if (Number.isNaN(selectedDate.getTime())) {
@@ -101,13 +101,13 @@ export const createAppointment = async (
       return;
     }
 
-    // Generate doctor's slots
+    
     const slots = generateSlots(
       doctor.startTime,
       doctor.dailyTokens
     );
 
-    // Check whether selected slot is valid
+    
     const slotIndex = slots.indexOf(slot);
 
     if (slotIndex === -1) {
@@ -156,7 +156,7 @@ export const createAppointment = async (
       return;
     }
 
-    // Create appointment
+    
     const appointment = await Appointment.create({
       user: req.user.userId,
       doctor: doctorId,
