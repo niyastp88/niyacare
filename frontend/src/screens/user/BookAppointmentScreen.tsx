@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import api from '../../services/api';
 
 interface Doctor {
   _id: string;
@@ -42,7 +43,7 @@ type Props = NativeStackScreenProps<
   'BookAppointment'
 >;
 
-const BookAppointmentScreen = ({route}: Props) => {
+const BookAppointmentScreen = ({route, navigation}: Props) => {
   const {doctor} = route.params;
 
   const [selectedDate, setSelectedDate] = useState<string | null>(
@@ -52,6 +53,11 @@ const BookAppointmentScreen = ({route}: Props) => {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(
     null,
   );
+
+  const [booking, setBooking] = useState(false);
+
+  // How many slots to display at first
+  const [visibleSlotCount, setVisibleSlotCount] = useState(30);
 
   const dates = useMemo(() => {
     const result: {
@@ -64,6 +70,7 @@ const BookAppointmentScreen = ({route}: Props) => {
 
     for (let i = 0; i < 14; i++) {
       const date = new Date(today);
+
       date.setDate(today.getDate() + i);
 
       const dayName = date.toLocaleDateString('en-US', {
@@ -108,38 +115,67 @@ const BookAppointmentScreen = ({route}: Props) => {
       const formattedHours = String(slotHours).padStart(2, '0');
       const formattedMinutes = String(slotMinutes).padStart(2, '0');
 
-      result.push(`${formattedHours}:${formattedMinutes}`);
+      result.push(
+        `${formattedHours}:${formattedMinutes}`,
+      );
     }
 
     return result;
   }, [doctor.startTime, doctor.dailyTokens]);
 
+  const visibleSlots = slots.slice(0, visibleSlotCount);
+
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
     setSelectedSlot(null);
+
+    // Reset slots when date changes
+    setVisibleSlotCount(30);
   };
 
-  const handleBookAppointment = () => {
-    if (!selectedDate) {
-      Alert.alert(
-        'Select Date',
-        'Please select an appointment date.',
-      );
-      return;
-    }
-
-    if (!selectedSlot) {
-      Alert.alert(
-        'Select Time',
-        'Please select an available time slot.',
-      );
-      return;
-    }
-
-    Alert.alert(
-      'Appointment',
-      `Date: ${selectedDate}\nTime: ${selectedSlot}`,
+  const handleShowMore = () => {
+    setVisibleSlotCount(prev =>
+      Math.min(prev + 30, slots.length),
     );
+  };
+
+  const handleBookAppointment = async () => {
+    if (!selectedDate || !selectedSlot) {
+      Alert.alert(
+        'Incomplete Selection',
+        'Please select a date and time slot.',
+      );
+      return;
+    }
+
+    try {
+      setBooking(true);
+
+      await api.post('/appointments', {
+        doctorId: doctor._id,
+        date: selectedDate,
+        slot: selectedSlot,
+      });
+
+      Alert.alert(
+        'Appointment Booked',
+        `Your appointment has been booked successfully.\n\nDate: ${selectedDate}\nTime: ${selectedSlot}`,
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.replace('UserHome'),
+          },
+        ],
+      );
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        'Failed to book appointment. Please try again.';
+
+      Alert.alert('Booking Failed', message);
+    } finally {
+      setBooking(false);
+    }
   };
 
   return (
@@ -150,7 +186,9 @@ const BookAppointmentScreen = ({route}: Props) => {
 
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.eyebrow}>BOOK APPOINTMENT</Text>
+          <Text style={styles.eyebrow}>
+            BOOK APPOINTMENT
+          </Text>
 
           <Text style={styles.title}>
             Choose your date & time
@@ -205,14 +243,16 @@ const BookAppointmentScreen = ({route}: Props) => {
             contentContainerStyle={styles.dateList}>
 
             {dates.map(item => {
-              const isSelected = selectedDate === item.date;
+              const isSelected =
+                selectedDate === item.date;
 
               return (
                 <TouchableOpacity
                   key={item.date}
                   style={[
                     styles.dateCard,
-                    isSelected && styles.selectedDateCard,
+                    isSelected &&
+                      styles.selectedDateCard,
                   ]}
                   onPress={() =>
                     handleDateSelect(item.date)
@@ -222,7 +262,8 @@ const BookAppointmentScreen = ({route}: Props) => {
                   <Text
                     style={[
                       styles.dayName,
-                      isSelected && styles.selectedDateText,
+                      isSelected &&
+                        styles.selectedDateText,
                     ]}>
                     {item.day.substring(0, 3)}
                   </Text>
@@ -230,7 +271,8 @@ const BookAppointmentScreen = ({route}: Props) => {
                   <Text
                     style={[
                       styles.dayNumber,
-                      isSelected && styles.selectedDateText,
+                      isSelected &&
+                        styles.selectedDateText,
                     ]}>
                     {item.dayNumber}
                   </Text>
@@ -252,31 +294,56 @@ const BookAppointmentScreen = ({route}: Props) => {
             </Text>
           </View>
         ) : (
-          <View style={styles.slotGrid}>
-            {slots.map(slot => {
-              const isSelected = selectedSlot === slot;
+          <>
+            <View style={styles.slotGrid}>
+              {visibleSlots.map(slot => {
+                const isSelected =
+                  selectedSlot === slot;
 
-              return (
-                <TouchableOpacity
-                  key={slot}
-                  style={[
-                    styles.slotButton,
-                    isSelected && styles.selectedSlot,
-                  ]}
-                  onPress={() => setSelectedSlot(slot)}
-                  activeOpacity={0.8}>
-
-                  <Text
+                return (
+                  <TouchableOpacity
+                    key={slot}
                     style={[
-                      styles.slotText,
-                      isSelected && styles.selectedSlotText,
-                    ]}>
-                    {slot}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                      styles.slotButton,
+                      isSelected &&
+                        styles.selectedSlot,
+                    ]}
+                    onPress={() =>
+                      setSelectedSlot(slot)
+                    }
+                    activeOpacity={0.8}>
+
+                    <Text
+                      style={[
+                        styles.slotText,
+                        isSelected &&
+                          styles.selectedSlotText,
+                      ]}>
+                      {slot}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Show More */}
+            {visibleSlotCount < slots.length && (
+              <TouchableOpacity
+                style={styles.showMoreButton}
+                onPress={handleShowMore}
+                activeOpacity={0.8}>
+
+                <Text style={styles.showMoreText}>
+                  Show More Slots
+                </Text>
+
+                <Text style={styles.remainingText}>
+                  {slots.length - visibleSlotCount} more
+                  available
+                </Text>
+              </TouchableOpacity>
+            )}
+          </>
         )}
 
         {/* Booking Summary */}
@@ -320,13 +387,21 @@ const BookAppointmentScreen = ({route}: Props) => {
 
         {/* Book Button */}
         <TouchableOpacity
-          style={styles.bookButton}
+          style={[
+            styles.bookButton,
+            booking && styles.disabledButton,
+          ]}
           onPress={handleBookAppointment}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+          disabled={booking}>
+
           <Text style={styles.bookButtonText}>
-            Confirm Appointment
+            {booking
+              ? 'Booking...'
+              : 'Confirm Appointment'}
           </Text>
         </TouchableOpacity>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -468,7 +543,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    marginBottom: 24,
+    marginBottom: 16,
   },
 
   slotButton: {
@@ -495,6 +570,29 @@ const styles = StyleSheet.create({
 
   selectedSlotText: {
     color: '#FFFFFF',
+  },
+
+  showMoreButton: {
+    minHeight: 48,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#0F9D9A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+
+  showMoreText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0F766E',
+  },
+
+  remainingText: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
   },
 
   infoCard: {
@@ -575,6 +673,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F9D9A',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  disabledButton: {
+    opacity: 0.6,
   },
 
   bookButtonText: {

@@ -5,6 +5,9 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: 'user' | 'admin';
+  resetPasswordOtp?: string;
+  resetPasswordOtpExpires?: Date;
+  resetPasswordVerified?: boolean;
 }
 
 const userSchema = new Schema<IUser>(
@@ -26,9 +29,21 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      minlength: 8,
     },
+    resetPasswordOtp: {
+  type: String,
+  default: undefined,
+},
 
+resetPasswordOtpExpires: {
+  type: Date,
+  default: undefined,
+},
+resetPasswordVerified: {
+  type: Boolean,
+  default: false,
+},
     role: {
       type: String,
       enum: ['user', 'admin'],

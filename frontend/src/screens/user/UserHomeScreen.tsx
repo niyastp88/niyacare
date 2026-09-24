@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -8,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Login: undefined;
@@ -15,30 +17,58 @@ type RootStackParamList = {
   UserHome: undefined;
   AdminDashboard: undefined;
   DoctorList: undefined;
+  MyAppointments: undefined;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'UserHome'>;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  'UserHome'
+>;
 
 const UserHomeScreen = ({navigation}: Props) => {
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('token');
+              await AsyncStorage.removeItem('user');
+
+              navigation.replace('Login');
+            } catch (error) {
+              console.log('Logout error:', error);
+
+              Alert.alert(
+                'Logout Failed',
+                'Unable to logout. Please try again.',
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}>
-        
+
         {/* Header */}
         <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Hello 👋</Text>
-            <Text style={styles.title}>Welcome to NiyaCare</Text>
-          </View>
-
-          <TouchableOpacity
-            style={styles.profileIcon}
-            onPress={() => navigation.replace('Login')}
-            activeOpacity={0.8}>
-            <Text style={styles.profileText}>U</Text>
-          </TouchableOpacity>
+          <Text style={styles.title}>
+            Welcome to NiyaCare
+          </Text>
         </View>
 
         {/* Hero Card */}
@@ -49,17 +79,20 @@ const UserHomeScreen = ({navigation}: Props) => {
             </Text>
 
             <Text style={styles.heroDescription}>
-              Find trusted doctors and book your appointment easily.
+              Find trusted doctors and book your
+              appointment easily.
             </Text>
 
             <TouchableOpacity
-  style={styles.primaryButton}
-  activeOpacity={0.8}
-  onPress={() => navigation.navigate('DoctorList')}>
-  <Text style={styles.primaryButtonText}>
-    Find a Doctor
-  </Text>
-</TouchableOpacity>
+              style={styles.primaryButton}
+              activeOpacity={0.8}
+              onPress={() =>
+                navigation.navigate('DoctorList')
+              }>
+              <Text style={styles.primaryButtonText}>
+                Find a Doctor
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.heroIconContainer}>
@@ -68,72 +101,80 @@ const UserHomeScreen = ({navigation}: Props) => {
         </View>
 
         {/* Quick Actions */}
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>
+          Quick Actions
+        </Text>
 
         <View style={styles.actionGrid}>
+          {/* Find Doctor */}
           <TouchableOpacity
             style={styles.actionCard}
-            activeOpacity={0.8} onPress={() => navigation.navigate('DoctorList')}>
-            <View style={[styles.actionIcon, styles.doctorIcon]}>
-              <Text style={styles.iconText}>+</Text>
+            activeOpacity={0.8}
+            onPress={() =>
+              navigation.navigate('DoctorList')
+            }>
+            <View
+              style={[
+                styles.actionIcon,
+                styles.doctorIcon,
+              ]}>
+              <Text style={styles.iconText}>
+                +
+              </Text>
             </View>
 
-            <Text style={styles.actionTitle}>Find Doctor</Text>
+            <Text style={styles.actionTitle}>
+              Find Doctor
+            </Text>
+
             <Text style={styles.actionDescription}>
               Browse specialists
             </Text>
           </TouchableOpacity>
 
+          {/* Appointments */}
           <TouchableOpacity
             style={styles.actionCard}
-            activeOpacity={0.8}>
-            <View style={[styles.actionIcon, styles.appointmentIcon]}>
-              <Text style={styles.iconText}>✓</Text>
+            activeOpacity={0.8}
+            onPress={() =>
+              navigation.navigate('MyAppointments')
+            }>
+            <View
+              style={[
+                styles.actionIcon,
+                styles.appointmentIcon,
+              ]}>
+              <Text style={styles.iconText}>
+                ✓
+              </Text>
             </View>
 
-            <Text style={styles.actionTitle}>Appointments</Text>
+            <Text style={styles.actionTitle}>
+              Appointments
+            </Text>
+
             <Text style={styles.actionDescription}>
               View your bookings
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Upcoming Appointment */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Upcoming Appointment</Text>
-
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.viewAll}>View all</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.appointmentCard}>
-          <View style={styles.doctorAvatar}>
-            <Text style={styles.avatarText}>DR</Text>
-          </View>
-
-          <View style={styles.appointmentInfo}>
-            <Text style={styles.doctorName}>
-              No upcoming appointments
-            </Text>
-
-            <Text style={styles.appointmentText}>
-              Book an appointment with a doctor
-            </Text>
-          </View>
-        </View>
-
         {/* Health Tip */}
         <View style={styles.tipCard}>
           <View style={styles.tipIcon}>
-            <Text style={styles.tipIconText}>♥</Text>
+            <Text style={styles.tipIconText}>
+              ♥
+            </Text>
           </View>
 
           <View style={styles.tipContent}>
-            <Text style={styles.tipTitle}>Health Tip</Text>
+            <Text style={styles.tipTitle}>
+              Health Tip
+            </Text>
 
             <Text style={styles.tipText}>
-              Regular health checkups can help detect health problems early.
+              Regular health checkups can help
+              detect health problems early.
             </Text>
           </View>
         </View>
@@ -141,11 +182,14 @@ const UserHomeScreen = ({navigation}: Props) => {
         {/* Logout */}
         <TouchableOpacity
           style={styles.logoutButton}
-          onPress={() => navigation.replace('Login')}
+          onPress={handleLogout}
           activeOpacity={0.8}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+          <Text style={styles.logoutIcon}>↪</Text>
 
+          <Text style={styles.logoutText}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -159,42 +203,18 @@ const styles = StyleSheet.create({
 
   container: {
     paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 30,
+    paddingTop: 30,
+    paddingBottom: 18,
   },
 
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 24,
-  },
-
-  greeting: {
-    fontSize: 14,
-    color: '#64748B',
-    marginBottom: 4,
   },
 
   title: {
     fontSize: 22,
     fontWeight: '700',
     color: '#0F172A',
-  },
-
-  profileIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: '#CCFBF1',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  profileText: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#0F766E',
   },
 
   heroCard: {
@@ -204,7 +224,7 @@ const styles = StyleSheet.create({
     padding: 22,
     flexDirection: 'row',
     overflow: 'hidden',
-    marginBottom: 28,
+    marginBottom: 26,
   },
 
   heroContent: {
@@ -267,7 +287,7 @@ const styles = StyleSheet.create({
   actionGrid: {
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 28,
+    marginBottom: 24,
   },
 
   actionCard: {
@@ -314,68 +334,12 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
 
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  viewAll: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#0F9D9A',
-    marginBottom: 14,
-  },
-
-  appointmentCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    marginBottom: 18,
-  },
-
-  doctorAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#E0F2FE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-
-  avatarText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0369A1',
-  },
-
-  appointmentInfo: {
-    flex: 1,
-  },
-
-  doctorName: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 5,
-  },
-
-  appointmentText: {
-    fontSize: 12,
-    lineHeight: 17,
-    color: '#64748B',
-  },
-
   tipCard: {
     flexDirection: 'row',
     backgroundColor: '#ECFDF5',
     borderRadius: 16,
     padding: 16,
+    marginBottom: 18,
   },
 
   tipIcon: {
@@ -411,14 +375,20 @@ const styles = StyleSheet.create({
   },
 
   logoutButton: {
-    marginTop: 24,
     height: 48,
     borderRadius: 12,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#FCA5A5',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  logoutIcon: {
+    fontSize: 20,
+    color: '#DC2626',
+    marginRight: 8,
   },
 
   logoutText: {

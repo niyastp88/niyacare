@@ -17,9 +17,7 @@ export const createAppointment = async (
       return;
     }
 
-    const { doctorId, date, slot } = req.body;
-
-    
+    const {doctorId, date, slot} = req.body;
 
     // Validate required fields
     if (!doctorId || !date || !slot) {
@@ -47,38 +45,41 @@ export const createAppointment = async (
         message: 'Invalid date',
       });
       return;
-
     }
 
     // Prevent booking for past dates
-// Prevent booking for past dates
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-if (selectedDate < today) {
-  res.status(400).json({
-    message: 'Appointment date cannot be in the past',
-  });
-  return;
-}
+    if (selectedDate < today) {
+      res.status(400).json({
+        message: 'Appointment date cannot be in the past',
+      });
+      return;
+    }
 
-// Prevent booking for past time slots on today's date
-if (selectedDate.getTime() === today.getTime()) {
-  const [slotHours, slotMinutes] = slot.split(':').map(Number);
+    // Prevent booking for past time slots on today's date
+    if (selectedDate.getTime() === today.getTime()) {
+      const [slotHours, slotMinutes] = slot
+        .split(':')
+        .map(Number);
 
-  const currentTime = new Date();
-  const currentMinutes =
-    currentTime.getHours() * 60 + currentTime.getMinutes();
+      const currentTime = new Date();
 
-  const slotTotalMinutes = slotHours * 60 + slotMinutes;
+      const currentMinutes =
+        currentTime.getHours() * 60 +
+        currentTime.getMinutes();
 
-  if (slotTotalMinutes <= currentMinutes) {
-    res.status(400).json({
-      message: 'This appointment slot has already passed',
-    });
-    return;
-  }
-}
+      const slotTotalMinutes =
+        slotHours * 60 + slotMinutes;
+
+      if (slotTotalMinutes <= currentMinutes) {
+        res.status(400).json({
+          message: 'This appointment slot has already passed',
+        });
+        return;
+      }
+    }
 
     const dayNames = [
       'Sunday',
@@ -118,15 +119,35 @@ if (selectedDate.getTime() === today.getTime()) {
 
     const tokenNumber = slotIndex + 1;
 
-    // Check whether slot is already booked
-    const existingAppointment = await Appointment.findOne({
-      doctor: doctorId,
-      date,
-      slot,
-      status: {
-        $in: ['pending', 'confirmed'],
-      },
-    });
+    // Check whether user already has
+    // an active appointment with this doctor
+    const existingDoctorAppointment =
+      await Appointment.findOne({
+        user: req.user.userId,
+        doctor: doctorId,
+        status: {
+          $in: ['pending', 'confirmed'],
+        },
+      });
+
+    if (existingDoctorAppointment) {
+      res.status(409).json({
+        message:
+          'You already have an active appointment with this doctor. Please complete or cancel it before booking another appointment.',
+      });
+      return;
+    }
+
+    // Check whether selected slot is already booked
+    const existingAppointment =
+      await Appointment.findOne({
+        doctor: doctorId,
+        date,
+        slot,
+        status: {
+          $in: ['pending', 'confirmed'],
+        },
+      });
 
     if (existingAppointment) {
       res.status(409).json({

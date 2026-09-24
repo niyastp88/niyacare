@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -8,13 +9,25 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import api from '../../services/api';
 
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   UserHome: undefined;
   AdminDashboard: undefined;
+  AdminAppointments: undefined;
+  AdminDoctors: undefined;
 };
+
+interface DashboardStats {
+  totalDoctors: number;
+  totalAppointments: number;
+  pendingAppointments: number;
+  completedAppointments: number;
+}
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -22,137 +35,258 @@ type Props = NativeStackScreenProps<
 >;
 
 const AdminDashboardScreen = ({navigation}: Props) => {
+  const [stats, setStats] = useState<DashboardStats>({
+    totalDoctors: 0,
+    totalAppointments: 0,
+    pendingAppointments: 0,
+    completedAppointments: 0,
+  });
+
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await api.get('/dashboard/stats');
+
+      setStats(response.data);
+    } catch (error: any) {
+      console.log(
+        'Dashboard stats error:',
+        error?.response?.data || error,
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('token');
+              await AsyncStorage.removeItem('user');
+
+              navigation.replace('Login');
+            } catch (error) {
+              console.log('Logout error:', error);
+
+              Alert.alert(
+                'Logout Failed',
+                'Unable to logout. Please try again.',
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}>
-        
+
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.eyebrow}>ADMIN PANEL</Text>
-            <Text style={styles.title}>Dashboard</Text>
+            <Text style={styles.eyebrow}>
+              ADMIN PANEL
+            </Text>
+
+            <Text style={styles.title}>
+              Dashboard
+            </Text>
+
             <Text style={styles.subtitle}>
               Manage NiyaCare efficiently
             </Text>
           </View>
-
-          <View style={styles.adminAvatar}>
-            <Text style={styles.adminAvatarText}>A</Text>
-          </View>
         </View>
 
-        <TouchableOpacity
-  onPress={() => navigation.replace('Login')}
-  style={styles.logoutButton}>
-  <Text style={styles.logoutText}>Logout</Text>
-</TouchableOpacity>
-
         {/* Overview */}
-        <Text style={styles.sectionTitle}>Overview</Text>
+        <Text style={styles.sectionTitle}>
+          Overview
+        </Text>
 
         <View style={styles.statsGrid}>
+          {/* Doctors */}
           <View style={styles.statCard}>
-            <View style={[styles.statIcon, styles.doctorIcon]}>
-              <Text style={styles.statIconText}>+</Text>
+            <View
+              style={[
+                styles.statIcon,
+                styles.doctorIcon,
+              ]}>
+              <Text style={styles.statIconText}>
+                +
+              </Text>
             </View>
 
-            <Text style={styles.statValue}>0</Text>
-            <Text style={styles.statLabel}>Doctors</Text>
+            <Text style={styles.statValue}>
+              {stats.totalDoctors}
+            </Text>
+
+            <Text style={styles.statLabel}>
+              Doctors
+            </Text>
           </View>
 
+          {/* Appointments */}
           <View style={styles.statCard}>
-            <View style={[styles.statIcon, styles.appointmentIcon]}>
-              <Text style={styles.statIconText}>✓</Text>
+            <View
+              style={[
+                styles.statIcon,
+                styles.appointmentIcon,
+              ]}>
+              <Text style={styles.statIconText}>
+                ✓
+              </Text>
             </View>
 
-            <Text style={styles.statValue}>0</Text>
-            <Text style={styles.statLabel}>Appointments</Text>
+            <Text style={styles.statValue}>
+              {stats.totalAppointments}
+            </Text>
+
+            <Text style={styles.statLabel}>
+              Appointments
+            </Text>
           </View>
 
+          {/* Pending */}
           <View style={styles.statCard}>
-            <View style={[styles.statIcon, styles.pendingIcon]}>
-              <Text style={styles.statIconText}>!</Text>
+            <View
+              style={[
+                styles.statIcon,
+                styles.pendingIcon,
+              ]}>
+              <Text style={styles.statIconText}>
+                !
+              </Text>
             </View>
 
-            <Text style={styles.statValue}>0</Text>
-            <Text style={styles.statLabel}>Pending</Text>
+            <Text style={styles.statValue}>
+              {stats.pendingAppointments}
+            </Text>
+
+            <Text style={styles.statLabel}>
+              Pending
+            </Text>
           </View>
 
+          {/* Completed */}
           <View style={styles.statCard}>
-            <View style={[styles.statIcon, styles.completedIcon]}>
-              <Text style={styles.statIconText}>✓</Text>
+            <View
+              style={[
+                styles.statIcon,
+                styles.completedIcon,
+              ]}>
+              <Text style={styles.statIconText}>
+                ✓
+              </Text>
             </View>
 
-            <Text style={styles.statValue}>0</Text>
-            <Text style={styles.statLabel}>Completed</Text>
+            <Text style={styles.statValue}>
+              {stats.completedAppointments}
+            </Text>
+
+            <Text style={styles.statLabel}>
+              Completed
+            </Text>
           </View>
         </View>
 
         {/* Management */}
-        <Text style={styles.sectionTitle}>Management</Text>
+        <Text style={styles.sectionTitle}>
+          Management
+        </Text>
 
+        {/* Manage Doctors */}
         <TouchableOpacity
           style={styles.managementCard}
-          activeOpacity={0.8}>
-          <View style={[styles.managementIcon, styles.doctorManagementIcon]}>
-            <Text style={styles.managementIconText}>+</Text>
+          activeOpacity={0.8}
+          onPress={() =>
+            navigation.navigate('AdminDoctors')
+          }>
+          <View
+            style={[
+              styles.managementIcon,
+              styles.doctorManagementIcon,
+            ]}>
+            <Text style={styles.managementIconText}>
+              +
+            </Text>
           </View>
 
           <View style={styles.managementContent}>
-            <Text style={styles.managementTitle}>Manage Doctors</Text>
+            <Text style={styles.managementTitle}>
+              Manage Doctors
+            </Text>
+
             <Text style={styles.managementDescription}>
               Add, update and manage doctor availability
             </Text>
           </View>
 
-          <Text style={styles.arrow}>›</Text>
+          <Text style={styles.arrow}>
+            ›
+          </Text>
         </TouchableOpacity>
 
+        {/* Manage Appointments */}
         <TouchableOpacity
           style={styles.managementCard}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+          onPress={() =>
+            navigation.navigate('AdminAppointments')
+          }>
           <View
             style={[
               styles.managementIcon,
               styles.appointmentManagementIcon,
             ]}>
-            <Text style={styles.managementIconText}>✓</Text>
+            <Text style={styles.managementIconText}>
+              ✓
+            </Text>
           </View>
 
           <View style={styles.managementContent}>
             <Text style={styles.managementTitle}>
               Manage Appointments
             </Text>
+
             <Text style={styles.managementDescription}>
               Review and update appointment status
             </Text>
           </View>
 
-          <Text style={styles.arrow}>›</Text>
+          <Text style={styles.arrow}>
+            ›
+          </Text>
         </TouchableOpacity>
 
-        {/* Recent Activity */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.viewAll}>View all</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.emptyCard}>
-          <View style={styles.emptyIcon}>
-            <Text style={styles.emptyIconText}>i</Text>
-          </View>
-
-          <Text style={styles.emptyTitle}>No recent activity</Text>
-
-          <Text style={styles.emptyDescription}>
-            New appointments and activities will appear here.
+        {/* Logout */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.8}>
+          <Text style={styles.logoutIcon}>
+            ↪
           </Text>
-        </View>
+
+          <Text style={styles.logoutText}>
+            Logout
+          </Text>
+        </TouchableOpacity>
 
         {/* Footer */}
         <Text style={styles.footer}>
@@ -171,14 +305,11 @@ const styles = StyleSheet.create({
 
   container: {
     paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 30,
+    paddingTop: 30,
+    paddingBottom: 18,
   },
 
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 28,
   },
 
@@ -200,21 +331,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#64748B',
     marginTop: 4,
-  },
-
-  adminAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#CCFBF1',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  adminAvatarText: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#0F766E',
   },
 
   sectionTitle: {
@@ -340,79 +456,37 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 16,
-  },
-
-  viewAll: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#0F9D9A',
-    marginBottom: 14,
-  },
-
-  emptyCard: {
+  logoutButton: {
+    height: 50,
+    borderRadius: 12,
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 24,
-    alignItems: 'center',
-  },
-
-  emptyIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#F1F5F9',
+    borderColor: '#FCA5A5',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginTop: 12,
+    marginBottom: 4,
   },
 
-  emptyIconText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#64748B',
+  logoutIcon: {
+    fontSize: 20,
+    color: '#DC2626',
+    marginRight: 8,
   },
 
-  emptyTitle: {
+  logoutText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 5,
-  },
-
-  emptyDescription: {
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#64748B',
-    textAlign: 'center',
+    color: '#DC2626',
   },
 
   footer: {
     textAlign: 'center',
     fontSize: 11,
     color: '#94A3B8',
-    marginTop: 28,
+    marginTop: 18,
   },
-  logoutButton: {
-  backgroundColor: '#0F9D9A',
-  borderRadius: 10,
-  paddingVertical: 10,
-  paddingHorizontal: 18,
-  alignSelf: 'flex-end',
-  marginBottom: 20,
-},
-
-logoutText: {
-  color: '#FFFFFF',
-  fontSize: 14,
-  fontWeight: '700',
-},
 });
 
 export default AdminDashboardScreen;

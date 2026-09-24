@@ -10,6 +10,7 @@ export interface IDoctor extends Document {
   availableDays: string[];
   startTime: string;
   dailyTokens: number;
+  isActive: boolean;
 }
 
 const doctorSchema = new Schema<IDoctor>(
@@ -72,6 +73,10 @@ const doctorSchema = new Schema<IDoctor>(
       type: Number,
       required: true,
       min: 1,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {

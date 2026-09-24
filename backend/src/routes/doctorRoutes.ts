@@ -5,7 +5,10 @@ import {
   getDoctors,
   getDoctorById,
   updateDoctor,
-  deleteDoctor,
+  deactivateDoctor,
+  activateDoctor,
+  getAdminDoctors,
+  
 } from '../controllers/doctorController';
 
 import { protect } from '../middleware/authMiddleware';
@@ -15,6 +18,13 @@ const router = Router();
 
 // Public
 router.get('/', getDoctors);
+
+router.get(
+  '/admin',
+  protect,
+  adminOnly,
+  getAdminDoctors
+);
 
 router.get('/:id', getDoctorById);
 
@@ -33,11 +43,20 @@ router.put(
   updateDoctor
 );
 
-router.delete(
-  '/:id',
+router.put(
+  '/:id/deactivate',
   protect,
   adminOnly,
-  deleteDoctor
+  deactivateDoctor
 );
+
+router.put(
+  '/:id/activate',
+  protect,
+  adminOnly,
+  activateDoctor
+);
+
+
 
 export default router;

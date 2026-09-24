@@ -17,6 +17,7 @@ import {loginUser} from '../../services/authService';
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
   UserHome: undefined;
   AdminDashboard: undefined;
 };
@@ -28,34 +29,41 @@ const LoginScreen = ({navigation}: Props) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-  if (!email || !password) {
-    Alert.alert('Missing Information', 'Please enter email and password');
-    return;
-  }
+    if (!email || !password) {
+      Alert.alert(
+        'Missing Information',
+        'Please enter email and password',
+      );
+      return;
+    }
 
-  try {
-    const data = await loginUser({
-      email,
-      password,
-    });
+    try {
+      const data = await loginUser({
+        email,
+        password,
+      });
 
-    await AsyncStorage.setItem('token', data.token);
-    await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.setItem('token', data.token);
+      await AsyncStorage.setItem(
+        'user',
+        JSON.stringify(data.user),
+      );
 
-    Alert.alert('Success', 'Login successful');
+      Alert.alert('Success', 'Login successful');
 
-if (data.user.role === 'admin') {
-  navigation.replace('AdminDashboard');
-} else {
-  navigation.replace('UserHome');
-}
-  } catch (error: any) {
-    const message =
-      error?.response?.data?.message || 'Login failed. Please try again.';
+      if (data.user.role === 'admin') {
+        navigation.replace('AdminDashboard');
+      } else {
+        navigation.replace('UserHome');
+      }
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        'Login failed. Please try again.';
 
-    Alert.alert('Login Failed', message);
-  }
-};
+      Alert.alert('Login Failed', message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -64,23 +72,31 @@ if (data.user.role === 'admin') {
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled">
-        
+
+        {/* Logo */}
         <View style={styles.logoContainer}>
           <View style={styles.logoCircle}>
             <Text style={styles.logoIcon}>+</Text>
           </View>
 
           <Text style={styles.appName}>NiyaCare</Text>
-          <Text style={styles.tagline}>Your health, our priority</Text>
+
+          <Text style={styles.tagline}>
+            Your health, our priority
+          </Text>
         </View>
 
+        {/* Login Form */}
         <View style={styles.formContainer}>
-          <Text style={styles.welcome}>Welcome Back 👋</Text>
-
-          <Text style={styles.description}>
-            Login to continue to your account
+          <Text style={styles.welcome}>
+            Login to NiyaCare
           </Text>
 
+          <Text style={styles.description}>
+            Enter your credentials to continue
+          </Text>
+
+          {/* Email */}
           <Text style={styles.label}>Email</Text>
 
           <TextInput
@@ -93,6 +109,7 @@ if (data.user.role === 'admin') {
             onChangeText={setEmail}
           />
 
+          {/* Password */}
           <Text style={styles.label}>Password</Text>
 
           <TextInput
@@ -104,13 +121,29 @@ if (data.user.role === 'admin') {
             onChangeText={setPassword}
           />
 
+          {/* Forgot Password */}
+          <TouchableOpacity
+            style={styles.forgotPasswordContainer}
+            activeOpacity={0.7}
+            onPress={() =>
+              navigation.navigate('ForgotPassword')
+            }>
+            <Text style={styles.forgotPassword}>
+              Forgot Password?
+            </Text>
+          </TouchableOpacity>
+
+          {/* Login Button */}
           <TouchableOpacity
             style={styles.loginButton}
             activeOpacity={0.8}
             onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Login</Text>
+            <Text style={styles.loginButtonText}>
+              Login
+            </Text>
           </TouchableOpacity>
 
+          {/* Register */}
           <View style={styles.registerContainer}>
             <Text style={styles.registerText}>
               Don't have an account?
@@ -118,12 +151,18 @@ if (data.user.role === 'admin') {
 
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.registerLink}> Register</Text>
+              onPress={() =>
+                navigation.navigate('Register')
+              }>
+              <Text style={styles.registerLink}>
+                {' '}
+                Register
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
 
+        {/* Footer */}
         <Text style={styles.footer}>
           Secure healthcare made simple
         </Text>
@@ -222,6 +261,18 @@ const styles = StyleSheet.create({
     color: '#0F172A',
     backgroundColor: '#F8FAFC',
     marginBottom: 18,
+  },
+
+  forgotPasswordContainer: {
+    alignItems: 'flex-end',
+    marginTop: -8,
+    marginBottom: 12,
+  },
+
+  forgotPassword: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0EA5A4',
   },
 
   loginButton: {
